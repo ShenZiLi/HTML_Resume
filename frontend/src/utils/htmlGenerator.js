@@ -1,28 +1,33 @@
 function generateHtml(resumeData, modules, cssStyle) {
   const cssContent = cssStyle?.cssContent || ''
 
-  const moduleHtml = modules
-    .map((mod) => {
-      let content = {}
-      try {
-        content = typeof mod.content === 'string' ? JSON.parse(mod.content) : (mod.content || {})
-      } catch { content = {} }
-      switch (mod.moduleType) {
-        case 'basic_info':
-          return generateBasicInfo(content)
-        case 'education':
-          return generateEducation(content)
-        case 'work_experience':
-          return generateWorkExperience(content)
-        case 'project':
-          return generateProject(content)
-        case 'award':
-          return generateAward(content)
-        default:
-          return ''
-      }
-    })
-    .join('\n')
+  let headerHtml = ''
+  const sectionHtmls = []
+
+  modules.forEach((mod) => {
+    let content = {}
+    try {
+      content = typeof mod.content === 'string' ? JSON.parse(mod.content) : (mod.content || {})
+    } catch { content = {} }
+
+    switch (mod.moduleType) {
+      case 'basic_info':
+        headerHtml = generateBasicInfo(content)
+        break
+      case 'education':
+        sectionHtmls.push(generateEducation(content))
+        break
+      case 'work_experience':
+        sectionHtmls.push(generateWorkExperience(content))
+        break
+      case 'project':
+        sectionHtmls.push(generateProject(content))
+        break
+      case 'award':
+        sectionHtmls.push(generateAward(content))
+        break
+    }
+  })
 
   return `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -33,8 +38,9 @@ function generateHtml(resumeData, modules, cssStyle) {
   <style>${cssContent}</style>
 </head>
 <body>
-  <div class="resume-container">
-    ${moduleHtml}
+  <div class="resume">
+    ${headerHtml}
+    ${sectionHtmls.join('\n    ')}
   </div>
 </body>
 </html>`
@@ -46,22 +52,21 @@ function generateBasicInfo(content) {
   const phone = content.phone || ''
   const email = content.email || ''
   const wechat = content.wechat || ''
+  const github = content.github || ''
+  const blog = content.blog || ''
 
   const contactItems = []
-  if (phone) contactItems.push(`<span class="contact-item">📞 ${phone}</span>`)
-  if (email) contactItems.push(`<span class="contact-item">✉️ ${email}</span>`)
-  if (wechat) contactItems.push(`<span class="contact-item">💬 ${wechat}</span>`)
+  if (phone) contactItems.push(`<span>${phone}</span>`)
+  if (email) contactItems.push(`<span>${email}</span>`)
+  if (wechat) contactItems.push(`<span>微信: ${wechat}</span>`)
+  if (github) contactItems.push(`<span>${github}</span>`)
+  if (blog) contactItems.push(`<span>${blog}</span>`)
 
-  return `
-  <section class="module basic-info">
-    <div class="header">
-      <h1 class="name">${name}</h1>
-      <p class="job-intention">${jobIntention}</p>
-    </div>
-    <div class="contact-bar">
-      ${contactItems.join('\n      ')}
-    </div>
-  </section>`
+  return `<header>
+    <h1 class="name">${name}</h1>
+    ${jobIntention ? `<p class="job-intention">${jobIntention}</p>` : ''}
+    ${contactItems.length ? `<div class="contact-info">${contactItems.join(' | ')}</div>` : ''}
+  </header>`
 }
 
 function generateEducation(content) {
@@ -71,19 +76,21 @@ function generateEducation(content) {
   const startDate = content.startDate || ''
   const endDate = content.endDate || ''
 
-  return `
-  <section class="module education">
+  const dateStr = [startDate, endDate].filter(Boolean).join(' - ')
+
+  return `<div class="section">
+    <h2 class="section-title">教育经历</h2>
     <div class="timeline-item">
       <div class="timeline-header">
-        <h3 class="school">${school}</h3>
-        <span class="date-range">${startDate} ~ ${endDate}</span>
+        <span class="school">${school}</span>
+        ${dateStr ? `<span class="date">${dateStr}</span>` : ''}
       </div>
-      <div class="timeline-body">
-        <span class="major">${major}</span>
-        <span class="degree">${degree}</span>
+      <div>
+        ${major ? `<span class="major">${major}</span>` : ''}
+        ${degree ? ` · <span class="degree">${degree}</span>` : ''}
       </div>
     </div>
-  </section>`
+  </div>`
 }
 
 function generateWorkExperience(content) {
@@ -94,25 +101,24 @@ function generateWorkExperience(content) {
   const startDate = content.startDate || ''
   const endDate = content.endDate || ''
 
-  const respItems = responsibilities
-    .filter((r) => r.trim())
-    .map((r) => `<li>${r}</li>`)
-    .join('\n        ')
+  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' - ')
 
-  return `
-  <section class="module work-experience">
+  const respHtml = responsibilities.length
+    ? `<ul class="description">${responsibilities.filter(r => r.trim()).map(r => `<li>${r}</li>`).join('\n        ')}</ul>`
+    : ''
+
+  return `<div class="section">
+    <h2 class="section-title">工作经历</h2>
     <div class="timeline-item">
       <div class="timeline-header">
-        <h3 class="company">${company}</h3>
-        <span class="date-range">${startDate} ~ ${endDate}</span>
+        <span class="company">${company}</span>
+        ${dateStr ? `<span class="date">${dateStr}</span>` : ''}
       </div>
-      <div class="timeline-body">
-        <p class="position">${position}</p>
-        ${techStack ? `<p class="tech-stack"><strong>技术栈：</strong>${techStack}</p>` : ''}
-        ${respItems ? `<ul class="responsibilities">\n        ${respItems}\n      </ul>` : ''}
-      </div>
+      ${position ? `<span class="position">${position}</span>` : ''}
+      ${techStack ? `<p style="margin-top:0.5rem;font-size:0.9rem;color:var(--gray);">技术栈：${techStack}</p>` : ''}
+      ${respHtml}
     </div>
-  </section>`
+  </div>`
 }
 
 function generateProject(content) {
@@ -124,42 +130,60 @@ function generateProject(content) {
   const description = content.description || ''
   const achievements = Array.isArray(content.achievements) ? content.achievements : []
 
-  const achItems = achievements
-    .filter((a) => a.trim())
-    .map((a) => `<li>${a}</li>`)
-    .join('\n        ')
+  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' - ')
 
-  return `
-  <section class="module project">
-    <div class="project-card">
-      <div class="project-header">
-        <h3 class="project-name">${projectName}</h3>
-        <span class="date-range">${startDate} ~ ${endDate}</span>
+  const achHtml = achievements.length
+    ? `<ul class="description">${achievements.filter(a => a.trim()).map(a => `<li>${a}</li>`).join('\n        ')}</ul>`
+    : ''
+
+  return `<div class="section">
+    <h2 class="section-title">项目经历</h2>
+    <div class="project">
+      <div class="timeline-header">
+        <span class="project-title">${projectName}</span>
+        ${dateStr ? `<span class="date">${dateStr}</span>` : ''}
       </div>
-      <div class="project-body">
-        <p class="role"><strong>角色：</strong>${role}</p>
-        ${techStack ? `<p class="tech-stack"><strong>技术栈：</strong>${techStack}</p>` : ''}
-        ${description ? `<p class="description">${description}</p>` : ''}
-        ${achItems ? `<ul class="achievements">\n        ${achItems}\n      </ul>` : ''}
-      </div>
+      ${role ? `<span class="position">${role}</span>` : ''}
+      ${techStack ? `<p style="margin-top:0.5rem;font-size:0.9rem;color:var(--gray);">技术栈：${techStack}</p>` : ''}
+      ${description ? `<p class="description" style="border-left:none;padding-left:0;margin-top:0.5rem;">${description}</p>` : ''}
+      ${achHtml}
     </div>
-  </section>`
+  </div>`
 }
 
 function generateAward(content) {
-  const certificates = Array.isArray(content.certificates) ? content.certificates : []
+  const categories = content.categories
+  let certTags = ''
 
-  const certTags = certificates
-    .filter((c) => c.trim())
-    .map((c) => `<span class="award-tag">${c}</span>`)
-    .join('\n      ')
+  if (typeof categories === 'string') {
+    try {
+      const parsed = JSON.parse(categories)
+      if (Array.isArray(parsed)) {
+        certTags = parsed.flatMap(cat => {
+          const items = cat.items || []
+          return items.map(i => `<span class="certificate-tag">${i}</span>`).join('\n      ')
+        }).join('\n      ')
+      }
+    } catch {
+      certTags = `<span class="certificate-tag">${categories}</span>`
+    }
+  } else if (Array.isArray(categories)) {
+    certTags = categories
+      .flatMap(cat => {
+        if (typeof cat === 'object' && cat.items) {
+          return cat.items.map(i => `<span class="certificate-tag">${i}</span>`)
+        }
+        return [`<span class="certificate-tag">${cat}</span>`]
+      })
+      .join('\n      ')
+  }
 
-  return `
-  <section class="module award">
-    <div class="award-list">
+  return `<div class="section">
+    <h2 class="section-title">荣誉证书</h2>
+    <div>
       ${certTags}
     </div>
-  </section>`
+  </div>`
 }
 
 export { generateHtml }

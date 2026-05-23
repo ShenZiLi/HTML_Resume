@@ -139,7 +139,7 @@ function onDragEnd(event) {
 
   const sortedModules = resumeStore.modules.map((mod, index) => ({
     id: mod.id,
-    sort_order: index
+    sortOrder: index
   }))
 
   batchUpdateSort(resumeStore.currentResume.id, sortedModules).catch(() => {

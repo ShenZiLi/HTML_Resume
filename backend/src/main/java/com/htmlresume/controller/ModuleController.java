@@ -1,6 +1,7 @@
 package com.htmlresume.controller;
 
 import com.htmlresume.common.Result;
+import com.htmlresume.dto.BatchSortRequest;
 import com.htmlresume.dto.ModuleSortItem;
 import com.htmlresume.entity.ResumeModule;
 import com.htmlresume.service.ModuleService;
@@ -45,11 +46,8 @@ public class ModuleController {
     }
 
     @PutMapping("/sort")
-    public Result<Void> batchUpdateSort(@RequestBody Map<String, Object> body) {
-        Long resumeId = Long.valueOf(body.get("resume_id").toString());
-        @SuppressWarnings("unchecked")
-        List<ModuleSortItem> modules = (List<ModuleSortItem>) body.get("modules");
-        moduleService.batchUpdateSort(resumeId, modules);
+    public Result<Void> batchUpdateSort(@RequestBody BatchSortRequest request) {
+        moduleService.batchUpdateSort(request.getResumeId(), request.getModules());
         return Result.success();
     }
 }

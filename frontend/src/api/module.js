@@ -13,7 +13,10 @@ export function deleteModule(id) {
 }
 
 export function batchUpdateSort(resumeId, modules) {
-  return request.put('/modules/sort', { resume_id: resumeId, modules })
+  return request.put('/modules/sort', {
+    resumeId,
+    modules: modules.map(m => ({ id: m.id, sortOrder: m.sortOrder }))
+  })
 }
 
 export function getModuleConfig(moduleType) {
