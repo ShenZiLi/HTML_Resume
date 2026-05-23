@@ -77,6 +77,7 @@ let startPct = 0
 let containerWidth = 0
 
 function startResize(side, e) {
+  if (e.target.closest('.collapse-btn')) return
   e.preventDefault()
   isDragging.value = true
   resizing = side
