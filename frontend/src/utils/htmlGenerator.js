@@ -256,7 +256,9 @@ function escapeHtml(str) {
 function boldMarkdown(str) {
   if (!str) return ''
   const escaped = escapeHtml(str)
-  return escaped.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+  return escaped
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\n/g, '<br/>')
 }
 
 export { generateHtml }
