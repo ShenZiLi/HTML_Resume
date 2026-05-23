@@ -1,6 +1,7 @@
 package com.htmlresume.controller;
 
 import com.htmlresume.common.Result;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +18,8 @@ import java.util.UUID;
 @RequestMapping("/api/v1/upload")
 public class FileUploadController {
 
-    private static final String UPLOAD_DIR = "backend/src/main/resources/static/images/";
+    @Value("${file.upload.path:src/main/resources/static/images/}")
+    private String uploadDir;
 
     @PostMapping("/image")
     public Result<String> uploadImage(@RequestParam("file") MultipartFile file) {
@@ -34,7 +36,7 @@ public class FileUploadController {
         String newFilename = UUID.randomUUID().toString() + extension;
 
         try {
-            Path uploadPath = Paths.get(UPLOAD_DIR);
+            Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }

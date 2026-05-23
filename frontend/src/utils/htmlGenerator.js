@@ -73,27 +73,21 @@ function generateBasicInfo(content) {
   if (phone) contactItems.push(`<span>📱 ${phone}</span>`)
   if (email) contactItems.push(`<span>✉️ ${email}</span>`)
   if (wechat) contactItems.push(`<span>💬 ${wechat}</span>`)
-  if (github) contactItems.push(`<a href="${github}" target="_blank">GitHub</a>`)
-  if (blog) contactItems.push(`<a href="${blog}" target="_blank">博客</a>`)
-  if (leetcode) contactItems.push(`<span>LeetCode: ${leetcode}</span>`)
-  if (workYears) contactItems.push(`<span>👨 ${workYears}</span>`)
+  if (workYears) contactItems.push(`<span>💼 ${workYears}</span>`)
   if (targetCity) contactItems.push(`<span>📍 ${targetCity}</span>`)
-  if (hometown) contactItems.push(`<span>🏠 ${hometown}</span>`)
-  if (salaryRange) contactItems.push(`<span>💰 ${salaryRange}</span>`)
-  if (expectedEntryDate) contactItems.push(`<span>📅 ${expectedEntryDate}</span>`)
-  if (isPartyMember) contactItems.push(`<span>🚩 中共党员</span>`)
+  if (github) contactItems.push(`<span>🌐 ${github}</span>`)
 
   const photoStyle = photoBorder ? 'style="border: 3px solid rgba(255,255,255,0.3);"' : ''
   const photoHtml = photo ? `<img class="avatar" src="${photo}" alt="照片" ${photoStyle}/>` : ''
 
   return `<header>
+    ${photoHtml}
     <div class="header-content">
       <h1 class="name">${name}</h1>
       ${jobIntention ? `<p class="job-intention">${jobIntention}</p>` : ''}
       ${contactItems.length ? `<div class="contact-info">${contactItems.join(' | ')}</div>` : ''}
       ${summary ? `<p class="summary">${summary}</p>` : ''}
     </div>
-    ${photoHtml}
   </header>`
 }
 
