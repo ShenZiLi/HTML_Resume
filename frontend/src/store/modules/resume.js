@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getResume, createResume, listResumes } from '../../api/resume'
+import { useStyleStore } from './style'
 
 export const useResumeStore = defineStore('resume', {
   state: () => ({
@@ -43,6 +44,11 @@ export const useResumeStore = defineStore('resume', {
         this.modules = data.modules || []
         this.moduleConfigs = data.moduleConfigs || []
         localStorage.setItem('resume_id', String(id))
+
+        const styleStore = useStyleStore()
+        if (data.style) {
+          styleStore.currentStyle = data.style
+        }
       } catch (error) {
         console.error('加载简历失败:', error)
         throw error

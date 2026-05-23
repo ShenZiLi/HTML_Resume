@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { listStyles, switchStyle as apiSwitchStyle } from '../../api/style'
+import { useResumeStore } from './resume'
 
 export const useStyleStore = defineStore('style', {
   state: () => ({
@@ -13,6 +14,12 @@ export const useStyleStore = defineStore('style', {
       try {
         const data = await listStyles()
         this.styles = data
+        if (data.length > 0 && !this.currentStyle) {
+          const resumeStore = useResumeStore()
+          const targetId = resumeStore.currentResume?.styleId
+          const matched = targetId ? data.find((s) => s.id === targetId) : null
+          this.currentStyle = matched || data[0]
+        }
       } catch (error) {
         console.error('加载样式列表失败:', error)
         throw error
