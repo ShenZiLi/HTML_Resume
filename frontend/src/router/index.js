@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
+    path: '/',
+    redirect: '/editor'
+  },
+  {
     path: '/editor',
     name: 'Editor',
     component: () => import('../views/Editor.vue')

@@ -5,13 +5,13 @@ export function listStyles() {
 }
 
 export function getStyle(id) {
-  return request.get(`/style/${id}`)
+  return request.get(`/styles/${id}`)
 }
 
 export function switchStyle(resumeId, styleId) {
-  return request.post(`/resume/${resumeId}/style`, { styleId })
+  return request.put(`/resumes/${resumeId}/style/${styleId}`)
 }
 
 export function saveStyleConfig(id, config) {
-  return request.put(`/style/${id}/config`, { config })
+  return request.put(`/resumes/${id}/style-config`, { styleConfig: config })
 }

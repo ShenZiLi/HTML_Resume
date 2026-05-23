@@ -1,5 +1,5 @@
 function generateHtml(resumeData, modules, cssStyle) {
-  const cssContent = cssStyle?.css_content || ''
+  const cssContent = cssStyle?.cssContent || ''
 
   const moduleHtml = modules
     .map((mod) => {

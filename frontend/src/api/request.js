@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getOrCreateDeviceId } from '../utils/deviceId'
 
 const request = axios.create({
   baseURL: '/api/v1',
@@ -7,7 +8,7 @@ const request = axios.create({
 
 request.interceptors.request.use(
   (config) => {
-    const deviceId = localStorage.getItem('device_id')
+    const deviceId = getOrCreateDeviceId()
     if (deviceId) {
       config.headers['X-Device-Id'] = deviceId
     }
@@ -20,7 +21,11 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
   (response) => {
-    return response.data
+    const result = response.data
+    if (result && result.code === 200) {
+      return result.data
+    }
+    return Promise.reject(new Error(result?.message || '请求失败'))
   },
   (error) => {
     if (error.response) {

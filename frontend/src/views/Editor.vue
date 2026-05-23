@@ -2,20 +2,40 @@
   <div class="editor-layout">
     <TopBar class="top-bar" />
     <div class="main-content">
-      <LeftPanel class="left-panel" />
-      <EditPanel class="edit-panel" />
+      <LeftPanel
+        class="left-panel"
+        :selected-module-id="resumeStore.selectedModuleId"
+        @select="handleSelectModule"
+      />
+      <EditPanel
+        class="edit-panel"
+        :selected-module="resumeStore.selectedModule"
+      />
       <PreviewPanel class="preview-panel" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineAsyncComponent } from 'vue'
+import { onMounted } from 'vue'
+import { useResumeStore } from '../store/modules/resume'
+import { useStyleStore } from '../store/modules/style'
+import TopBar from '../components/editor/TopBar.vue'
+import LeftPanel from '../components/editor/LeftPanel.vue'
+import EditPanel from '../components/editor/EditPanel.vue'
+import PreviewPanel from '../components/editor/PreviewPanel.vue'
 
-const TopBar = defineAsyncComponent(() => import('../components/editor/TopBar.vue'))
-const LeftPanel = defineAsyncComponent(() => import('../components/editor/LeftPanel.vue'))
-const EditPanel = defineAsyncComponent(() => import('../components/editor/EditPanel.vue'))
-const PreviewPanel = defineAsyncComponent(() => import('../components/editor/PreviewPanel.vue'))
+const resumeStore = useResumeStore()
+const styleStore = useStyleStore()
+
+function handleSelectModule(mod) {
+  resumeStore.selectedModuleId = mod.id
+}
+
+onMounted(async () => {
+  await resumeStore.initOrRestore()
+  styleStore.loadStyles()
+})
 </script>
 
 <style scoped>
@@ -25,13 +45,15 @@ const PreviewPanel = defineAsyncComponent(() => import('../components/editor/Pre
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  background: var(--color-background);
 }
 
 .top-bar {
-  height: 48px;
+  height: 52px;
   flex-shrink: 0;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fff;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-card);
+  box-shadow: var(--shadow-sm);
 }
 
 .main-content {
@@ -41,23 +63,22 @@ const PreviewPanel = defineAsyncComponent(() => import('../components/editor/Pre
 }
 
 .left-panel {
-  width: 200px;
-  border-right: 1px solid #e5e7eb;
-  background: #fafafa;
+  width: 220px;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-card);
   overflow-y: auto;
 }
 
 .edit-panel {
   flex: 1;
-  padding: 16px;
   overflow-y: auto;
-  background: #f5f5f5;
+  background: var(--color-background);
 }
 
 .preview-panel {
-  width: 500px;
-  border-left: 1px solid #e5e7eb;
-  background: #fff;
+  width: 480px;
+  border-left: 1px solid var(--color-border);
+  background: var(--color-card);
   overflow-y: auto;
 }
 </style>

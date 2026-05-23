@@ -69,7 +69,7 @@ watch(
 
     try {
       const config = await getModuleConfig(mod.module_type)
-      fieldConfigs.value = config?.fields || []
+      fieldConfigs.value = Array.isArray(config) ? config : []
     } catch (error) {
       fieldConfigs.value = []
     }
@@ -111,40 +111,62 @@ async function saveData() {
 
 <style scoped>
 .edit-panel {
-  padding: 16px;
+  padding: 20px 24px;
   height: 100%;
   overflow-y: auto;
 }
 
 .edit-content {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
 }
 
 .edit-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .edit-title {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-foreground);
 }
 
 .save-status {
   font-size: 12px;
-  color: #999;
+  color: var(--color-accent);
+  font-weight: 500;
 }
 
 .empty-state {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
-  color: #999;
+  color: var(--color-muted-foreground);
   font-size: 14px;
+  gap: 8px;
+}
+
+.empty-state::before {
+  content: '';
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

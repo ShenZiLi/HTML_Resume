@@ -59,7 +59,7 @@ watch(
   () => styleStore.currentStyle,
   (style) => {
     if (style) {
-      cssContent.value = style.css_content || ''
+      cssContent.value = style.cssContent || ''
     }
   },
   { immediate: true }
@@ -100,7 +100,7 @@ function onCssChange() {
 
   cssSaveTimer = setTimeout(() => {
     if (styleStore.currentStyle) {
-      styleStore.currentStyle.css_content = cssContent.value
+      styleStore.currentStyle.cssContent = cssContent.value
       updatePreview()
     }
   }, 1000)
@@ -112,12 +112,16 @@ function onCssChange() {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 .panel-tabs {
   display: flex;
-  border-bottom: 1px solid #e5e7eb;
-  background: #fafafa;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-muted);
+  padding: 0 4px;
 }
 
 .tab {
@@ -125,20 +129,24 @@ function onCssChange() {
   text-align: center;
   padding: 10px 0;
   font-size: 13px;
-  color: #666;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
   border-bottom: 2px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  letter-spacing: 0.02em;
 }
 
 .tab:hover {
-  color: #409eff;
+  color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.04);
 }
 
 .tab.active {
-  color: #409eff;
-  background: #fff;
-  border-bottom-color: #409eff;
+  color: var(--color-primary);
+  background: var(--color-card);
+  border-bottom-color: var(--color-primary);
 }
 
 .panel-content {
@@ -150,13 +158,17 @@ function onCssChange() {
   height: 100%;
   display: flex;
   flex-direction: column;
+  padding: 12px;
+  background: var(--color-muted);
 }
 
 .preview-iframe {
   flex: 1;
   width: 100%;
   border: none;
-  background: #fff;
+  border-radius: var(--radius-md);
+  background: var(--color-card);
+  box-shadow: var(--shadow-md);
 }
 
 .css-editor-container {
@@ -166,8 +178,18 @@ function onCssChange() {
 
 .css-editor-container :deep(.el-textarea__inner) {
   height: 100%;
-  font-family: 'Consolas', 'Monaco', monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
+  background: var(--color-foreground);
+  color: #e2e8f0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: 16px;
+}
+
+.css-editor-container :deep(.el-textarea__inner):focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
 }
 </style>

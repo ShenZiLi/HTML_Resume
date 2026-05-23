@@ -107,4 +107,25 @@ function emitUpdate() {
   padding: 16px;
   overflow-y: auto;
 }
+
+.dynamic-form :deep(.el-form-item__label) {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--color-foreground);
+  padding-bottom: 4px;
+}
+
+.dynamic-form :deep(.el-form-item) {
+  margin-bottom: 16px;
+}
+
+.dynamic-form :deep(.el-input__wrapper),
+.dynamic-form :deep(.el-textarea__inner) {
+  border-radius: var(--radius-sm);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.dynamic-form :deep(.el-input__wrapper:focus-within) {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
 </style>

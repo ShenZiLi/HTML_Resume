@@ -88,9 +88,10 @@ async function saveTitle() {
 
 async function handleNewResume() {
   try {
-    const res = await createResume({ title: '未命名简历' })
+    const resume = await createResume({ title: '未命名简历' })
     ElMessage.success('新建简历成功')
-    resumeStore.loadResume(res.id || res.data?.id)
+    await resumeStore.loadResume(resume.id)
+    resumeStore.autoSelectFirstModule()
     styleStore.loadStyles()
   } catch (error) {
     ElMessage.error('新建简历失败')
@@ -176,10 +177,10 @@ async function handleStyleChange(styleId) {
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  padding: 0 12px;
-  font-size: 14px;
-  color: #333;
-  gap: 8px;
+  padding: 0 16px;
+  font-size: 13px;
+  color: var(--color-foreground);
+  gap: 10px;
 }
 
 .top-bar-left {
@@ -190,16 +191,29 @@ async function handleStyleChange(styleId) {
 }
 
 .title-input {
-  width: 200px;
+  width: 180px;
+}
+
+.title-input :deep(.el-input__wrapper) {
+  background: var(--color-muted);
+  border: 1px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.title-input :deep(.el-input__wrapper:hover),
+.title-input :deep(.el-input__wrapper.is-focus) {
+  border-color: var(--color-primary);
 }
 
 .title-placeholder {
-  color: #999;
+  color: var(--color-muted-foreground);
   margin-right: 8px;
+  font-weight: 500;
 }
 
 .top-bar-right {
   display: flex;
   align-items: center;
+  gap: 4px;
 }
 </style>

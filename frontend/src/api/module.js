@@ -1,15 +1,15 @@
 import request from './request'
 
 export function addModule(data) {
-  return request.post('/module', data)
+  return request.post('/modules', data)
 }
 
 export function updateModuleContent(id, content) {
-  return request.put(`/module/${id}/content`, { content })
+  return request.put(`/modules/${id}/content`, { content })
 }
 
 export function deleteModule(id) {
-  return request.delete(`/module/${id}`)
+  return request.delete(`/modules/${id}`)
 }
 
 export function batchUpdateSort(resumeId, modules) {
@@ -17,5 +17,5 @@ export function batchUpdateSort(resumeId, modules) {
 }
 
 export function getModuleConfig(moduleType) {
-  return request.get(`/module/config/${moduleType}`)
+  return request.get(`/module-config/${moduleType}`)
 }

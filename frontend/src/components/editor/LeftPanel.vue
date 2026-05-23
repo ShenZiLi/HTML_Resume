@@ -58,7 +58,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 const props = defineProps({
   selectedModuleId: {
-    type: Number,
+    type: [Number, null],
     default: null
   }
 })
@@ -164,31 +164,37 @@ function onDragEnd(event) {
 .module-card {
   display: flex;
   align-items: center;
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  background: #fff;
-  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  background: var(--color-card);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid #e5e7eb;
-  gap: 8px;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--color-border);
+  gap: 10px;
 }
 
 .module-card:hover {
-  border-color: #409eff;
-  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .module-card.active {
-  background: #ecf5ff;
-  border-color: #409eff;
+  background: var(--color-muted);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .drag-handle {
   cursor: grab;
-  color: #999;
+  color: var(--color-muted-foreground);
   font-size: 14px;
   user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.drag-handle:hover {
+  color: var(--color-primary);
 }
 
 .drag-handle:active {
@@ -198,17 +204,22 @@ function onDragEnd(event) {
 .module-label {
   flex: 1;
   font-size: 13px;
-  color: #333;
+  font-weight: 500;
+  color: var(--color-foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.module-card.active .module-label {
+  color: var(--color-primary);
 }
 
 .delete-btn {
   padding: 0 4px;
   font-size: 12px;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--transition-fast);
 }
 
 .module-card:hover .delete-btn {
@@ -217,7 +228,7 @@ function onDragEnd(event) {
 
 .add-module-area {
   padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border);
   margin-top: 12px;
 }
 </style>

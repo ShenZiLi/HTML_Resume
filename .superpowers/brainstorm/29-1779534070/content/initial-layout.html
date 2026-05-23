@@ -1,0 +1,92 @@
+<h2>简历编辑器 — 初始界面方案</h2>
+<p class="subtitle">恢复上次编辑 + 三栏同时可见，选择你喜欢的初始状态</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;flex-direction:column;height:320px;background:#f5f5f5;border-radius:8px;overflow:hidden;">
+        <div style="height:40px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 12px;gap:8px;">
+          <span style="font-size:12px;color:#999;">📄 我的简历</span>
+          <span style="margin-left:auto;font-size:11px;color:#409eff;">简约商务 ▾</span>
+        </div>
+        <div style="display:flex;flex:1;overflow:hidden;">
+          <div style="width:180px;background:#fafafa;border-right:1px solid #e5e7eb;padding:8px;">
+            <div style="background:#ecf5ff;border:1px solid #409eff;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 基本信息</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 教育经历</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 工作经历</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 项目经历</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;font-size:11px;">☰ 荣誉证书</div>
+            <div style="margin-top:8px;text-align:center;font-size:11px;color:#409eff;">+ 添加模块</div>
+          </div>
+          <div style="flex:1;padding:12px;background:#f5f5f5;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:#333;">基本信息</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:4px 8px;font-size:10px;color:#999;">姓名</div>
+              <div style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:4px 8px;font-size:10px;color:#999;">求职意向</div>
+              <div style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:4px 8px;font-size:10px;color:#999;">电话</div>
+              <div style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:4px 8px;font-size:10px;color:#999;">邮箱</div>
+            </div>
+          </div>
+          <div style="width:280px;background:#fff;border-left:1px solid #e5e7eb;padding:8px;">
+            <div style="display:flex;margin-bottom:6px;gap:0;">
+              <span style="flex:1;text-align:center;font-size:11px;padding:4px;color:#409eff;border-bottom:2px solid #409eff;">预览</span>
+              <span style="flex:1;text-align:center;font-size:11px;padding:4px;color:#999;">CSS 编辑器</span>
+            </div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:4px;padding:8px;font-size:9px;line-height:1.4;color:#666;">
+              <div style="text-align:center;margin-bottom:4px;"><strong style="font-size:11px;">张三</strong></div>
+              <div style="text-align:center;font-size:9px;color:#999;">前端工程师</div>
+              <div style="margin-top:6px;border-top:1px solid #eee;padding-top:4px;font-size:9px;color:#409eff;">教育经历</div>
+              <div style="font-size:8px;color:#999;">XX大学 · 计算机科学</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 A：直接恢复编辑</h3>
+      <p>打开即恢复上次简历，自动选中第一个模块（基本信息），三栏全部就绪。最直接的体验。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;flex-direction:column;height:320px;background:#f5f5f5;border-radius:8px;overflow:hidden;">
+        <div style="height:40px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;padding:0 12px;gap:8px;">
+          <span style="font-size:12px;color:#999;">📄 我的简历</span>
+          <span style="margin-left:auto;font-size:11px;color:#409eff;">简约商务 ▾</span>
+        </div>
+        <div style="display:flex;flex:1;overflow:hidden;">
+          <div style="width:180px;background:#fafafa;border-right:1px solid #e5e7eb;padding:8px;">
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 基本信息</div>
+            <div style="background:#ecf5ff;border:1px solid #409eff;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 教育经历</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 工作经历</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;margin-bottom:4px;font-size:11px;">☰ 项目经历</div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 8px;font-size:11px;">☰ 荣誉证书</div>
+            <div style="margin-top:8px;text-align:center;font-size:11px;color:#409eff;">+ 添加模块</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f5f5f5;color:#999;">
+            <div style="font-size:28px;margin-bottom:8px;">📋</div>
+            <div style="font-size:13px;">点击左侧模块开始编辑</div>
+            <div style="font-size:11px;margin-top:4px;color:#bbb;">或点击「新建简历」创建</div>
+          </div>
+          <div style="width:280px;background:#fff;border-left:1px solid #e5e7eb;padding:8px;">
+            <div style="display:flex;margin-bottom:6px;gap:0;">
+              <span style="flex:1;text-align:center;font-size:11px;padding:4px;color:#409eff;border-bottom:2px solid #409eff;">预览</span>
+              <span style="flex:1;text-align:center;font-size:11px;padding:4px;color:#999;">CSS 编辑器</span>
+            </div>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:4px;padding:8px;font-size:9px;line-height:1.4;color:#666;">
+              <div style="text-align:center;margin-bottom:4px;"><strong style="font-size:11px;">张三</strong></div>
+              <div style="text-align:center;font-size:9px;color:#999;">前端工程师</div>
+              <div style="margin-top:6px;border-top:1px solid #eee;padding-top:4px;font-size:9px;color:#409eff;">教育经历</div>
+              <div style="font-size:8px;color:#999;">XX大学 · 计算机科学</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 B：恢复但需选择模块</h3>
+      <p>打开即恢复上次简历，预览区显示内容，但中间编辑区显示「点击模块开始编辑」提示，用户需点击左侧模块才进入编辑。更从容的体验。</p>
+    </div>
+  </div>
+</div>
