@@ -1,16 +1,19 @@
 import { defineStore } from 'pinia'
-import { getResume, createResume } from '../../api/resume'
+import { getResume, createResume, listResumes } from '../../api/resume'
 
 export const useResumeStore = defineStore('resume', {
   state: () => ({
     currentResume: null,
     modules: [],
     moduleConfigs: [],
-    selectedModuleId: null
+    selectedModuleId: null,
+    resumeList: []
   }),
 
   actions: {
     async initOrRestore() {
+      this.loadResumeList()
+
       const savedId = localStorage.getItem('resume_id')
 
       if (savedId) {
@@ -44,6 +47,20 @@ export const useResumeStore = defineStore('resume', {
         console.error('加载简历失败:', error)
         throw error
       }
+    },
+
+    async loadResumeList() {
+      try {
+        this.resumeList = await listResumes()
+      } catch (error) {
+        console.error('加载简历列表失败:', error)
+      }
+    },
+
+    async switchResume(id) {
+      if (this.currentResume && this.currentResume.id === id) return
+      await this.loadResume(id)
+      this.autoSelectFirstModule()
     },
 
     autoSelectFirstModule() {

@@ -1,6 +1,21 @@
 <template>
   <div class="top-bar">
     <div class="top-bar-left">
+      <el-select
+        v-model="currentResumeId"
+        class="resume-selector"
+        size="small"
+        placeholder="选择简历"
+        @change="handleResumeSwitch"
+      >
+        <el-option
+          v-for="r in resumeStore.resumeList"
+          :key="r.id"
+          :label="r.title || '未命名简历'"
+          :value="r.id"
+        />
+      </el-select>
+
       <el-input
         v-if="resumeStore.currentResume"
         v-model="titleInput"
@@ -52,6 +67,11 @@ const importInput = ref(null)
 const titleInput = ref('')
 const selectedStyleId = ref(null)
 
+const currentResumeId = computed({
+  get: () => resumeStore.currentResume?.id || null,
+  set: () => {}
+})
+
 watch(
   () => resumeStore.currentResume,
   (val) => {
@@ -86,10 +106,20 @@ async function saveTitle() {
   }
 }
 
+async function handleResumeSwitch(resumeId) {
+  try {
+    await resumeStore.switchResume(resumeId)
+    styleStore.loadStyles()
+  } catch (error) {
+    ElMessage.error('切换简历失败')
+  }
+}
+
 async function handleNewResume() {
   try {
     const resume = await createResume({ title: '未命名简历' })
     ElMessage.success('新建简历成功')
+    await resumeStore.loadResumeList()
     await resumeStore.loadResume(resume.id)
     resumeStore.autoSelectFirstModule()
     styleStore.loadStyles()
@@ -187,6 +217,22 @@ async function handleStyleChange(styleId) {
   align-items: center;
   gap: 8px;
   flex-wrap: nowrap;
+}
+
+.resume-selector {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.resume-selector :deep(.el-input__wrapper) {
+  background: var(--color-muted);
+  border: 1px solid transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.resume-selector :deep(.el-input__wrapper:hover),
+.resume-selector :deep(.el-input__wrapper.is-focus) {
+  border-color: var(--color-primary);
 }
 
 .title-input {
