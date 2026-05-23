@@ -3,19 +3,19 @@
     <el-form label-position="top" label-width="100%">
       <el-form-item
         v-for="field in fieldConfigs"
-        :key="field.field_name"
-        :label="field.label"
+        :key="field.fieldKey"
+        :label="field.fieldName"
       >
         <el-input
-          v-if="field.field_type === 'text'"
-          v-model="localData[field.field_name]"
+          v-if="field.fieldType === 'text'"
+          v-model="localData[field.fieldKey]"
           :placeholder="field.placeholder || ''"
           @change="emitUpdate"
         />
 
         <el-input
-          v-else-if="field.field_type === 'textarea'"
-          v-model="localData[field.field_name]"
+          v-else-if="field.fieldType === 'textarea'"
+          v-model="localData[field.fieldKey]"
           type="textarea"
           :rows="4"
           :placeholder="field.placeholder || ''"
@@ -23,8 +23,8 @@
         />
 
         <el-date-picker
-          v-else-if="field.field_type === 'date'"
-          v-model="localData[field.field_name]"
+          v-else-if="field.fieldType === 'date'"
+          v-model="localData[field.fieldKey]"
           type="month"
           value-format="YYYY-MM"
           :placeholder="field.placeholder || '选择日期'"
@@ -33,8 +33,8 @@
         />
 
         <el-select
-          v-else-if="field.field_type === 'select'"
-          v-model="localData[field.field_name]"
+          v-else-if="field.fieldType === 'select'"
+          v-model="localData[field.fieldKey]"
           :placeholder="field.placeholder || '请选择'"
           style="width: 100%"
           @change="emitUpdate"
@@ -48,21 +48,21 @@
         </el-select>
 
         <el-switch
-          v-else-if="field.field_type === 'switch'"
-          v-model="localData[field.field_name]"
+          v-else-if="field.fieldType === 'switch'"
+          v-model="localData[field.fieldKey]"
           @change="emitUpdate"
         />
 
         <el-input
-          v-else-if="field.field_type === 'image'"
-          v-model="localData[field.field_name]"
+          v-else-if="field.fieldType === 'image'"
+          v-model="localData[field.fieldKey]"
           :placeholder="field.placeholder || '点击上传图片或输入图片URL'"
           @change="emitUpdate"
         />
 
         <el-input
           v-else
-          v-model="localData[field.field_name]"
+          v-model="localData[field.fieldKey]"
           :placeholder="field.placeholder || ''"
           @change="emitUpdate"
         />

@@ -2,7 +2,7 @@
   <div class="edit-panel">
     <div v-if="selectedModule" class="edit-content">
       <div class="edit-header">
-        <h3 class="edit-title">{{ getModuleLabel(selectedModule.module_type) }}</h3>
+        <h3 class="edit-title">{{ getModuleLabel(selectedModule.moduleType) }}</h3>
         <span v-if="isSaving" class="save-status">保存中...</span>
         <span v-else-if="lastSaved" class="save-status">已保存 {{ lastSaved }}</span>
       </div>
@@ -65,11 +65,20 @@ watch(
       return
     }
 
-    formData.value = { ...(mod.content || {}) }
+    let parsedContent = {}
+    try {
+      parsedContent = typeof mod.content === 'string' ? JSON.parse(mod.content) : (mod.content || {})
+    } catch { parsedContent = {} }
+    formData.value = parsedContent
 
     try {
-      const config = await getModuleConfig(mod.module_type)
-      fieldConfigs.value = Array.isArray(config) ? config : []
+      const config = await getModuleConfig(mod.moduleType)
+      fieldConfigs.value = Array.isArray(config)
+        ? config.map((field) => ({
+            ...field,
+            options: typeof field.options === 'string' ? JSON.parse(field.options) : field.options
+          }))
+        : []
     } catch (error) {
       fieldConfigs.value = []
     }

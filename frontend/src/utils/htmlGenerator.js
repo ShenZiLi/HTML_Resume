@@ -3,8 +3,11 @@ function generateHtml(resumeData, modules, cssStyle) {
 
   const moduleHtml = modules
     .map((mod) => {
-      const content = mod.content || {}
-      switch (mod.module_type) {
+      let content = {}
+      try {
+        content = typeof mod.content === 'string' ? JSON.parse(mod.content) : (mod.content || {})
+      } catch { content = {} }
+      switch (mod.moduleType) {
         case 'basic_info':
           return generateBasicInfo(content)
         case 'education':
@@ -39,7 +42,7 @@ function generateHtml(resumeData, modules, cssStyle) {
 
 function generateBasicInfo(content) {
   const name = content.name || ''
-  const jobIntention = content.job_intention || ''
+  const jobIntention = content.jobIntention || ''
   const phone = content.phone || ''
   const email = content.email || ''
   const wechat = content.wechat || ''
@@ -65,8 +68,8 @@ function generateEducation(content) {
   const school = content.school || ''
   const major = content.major || ''
   const degree = content.degree || ''
-  const startDate = content.start_date || ''
-  const endDate = content.end_date || ''
+  const startDate = content.startDate || ''
+  const endDate = content.endDate || ''
 
   return `
   <section class="module education">
@@ -86,10 +89,10 @@ function generateEducation(content) {
 function generateWorkExperience(content) {
   const company = content.company || ''
   const position = content.position || ''
-  const techStack = content.tech_stack || ''
+  const techStack = content.techStack || ''
   const responsibilities = Array.isArray(content.responsibilities) ? content.responsibilities : []
-  const startDate = content.start_date || ''
-  const endDate = content.end_date || ''
+  const startDate = content.startDate || ''
+  const endDate = content.endDate || ''
 
   const respItems = responsibilities
     .filter((r) => r.trim())
@@ -113,11 +116,11 @@ function generateWorkExperience(content) {
 }
 
 function generateProject(content) {
-  const projectName = content.project_name || ''
+  const projectName = content.projectName || ''
   const role = content.role || ''
-  const startDate = content.start_date || ''
-  const endDate = content.end_date || ''
-  const techStack = content.tech_stack || ''
+  const startDate = content.startDate || ''
+  const endDate = content.endDate || ''
+  const techStack = content.techStack || ''
   const description = content.description || ''
   const achievements = Array.isArray(content.achievements) ? content.achievements : []
 

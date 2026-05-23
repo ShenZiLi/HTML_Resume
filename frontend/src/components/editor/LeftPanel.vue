@@ -14,7 +14,7 @@
           @click="selectModule(element)"
         >
           <span class="drag-handle">☰</span>
-          <span class="module-label">{{ getModuleLabel(element.module_type) }}</span>
+          <span class="module-label">{{ getModuleLabel(element.moduleType) }}</span>
           <el-button
             class="delete-btn"
             size="small"
