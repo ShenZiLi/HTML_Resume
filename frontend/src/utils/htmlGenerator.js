@@ -85,7 +85,7 @@ function generateBasicInfo(content) {
     <div class="header-content">
       <h1 class="name">${name}</h1>
       ${jobIntention ? `<p class="job-intention">${jobIntention}</p>` : ''}
-      ${contactItems.length ? `<div class="contact-info">${contactItems.join(' | ')}</div>` : ''}
+      ${contactItems.length ? `<div class="contact-info">${contactItems.join('')}</div>` : ''}
       ${summary ? `<p class="summary">${summary}</p>` : ''}
     </div>
   </header>`

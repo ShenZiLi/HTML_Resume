@@ -42,4 +42,14 @@ public class StyleServiceImpl extends ServiceImpl<CssStyleMapper, CssStyle> impl
         wrapper.last("LIMIT 1");
         return getOne(wrapper);
     }
+
+    @Override
+    public CssStyle updateStyleContent(Long id, String cssContent) {
+        CssStyle style = getById(id);
+        if (style != null) {
+            style.setCssContent(cssContent);
+            updateById(style);
+        }
+        return style;
+    }
 }

@@ -6,21 +6,21 @@
         :class="{ active: activeTab === 'preview' }"
         @click="activeTab = 'preview'"
       >
-        预览
+        HTML预览
       </span>
       <span
         class="tab"
         :class="{ active: activeTab === 'html' }"
         @click="activeTab = 'html'"
       >
-        HTML
+        HTML源码
       </span>
       <span
         class="tab"
         :class="{ active: activeTab === 'css' }"
         @click="activeTab = 'css'"
       >
-        CSS 编辑器
+        CSS编辑
       </span>
     </div>
 
@@ -43,6 +43,10 @@
       </div>
 
       <div v-show="activeTab === 'css'" class="css-editor-container">
+        <div class="css-header">
+          <span class="css-label">CSS 源码</span>
+          <span class="save-status" :class="{ 'has-status': cssSaveStatus }">{{ cssSaveStatus }}</span>
+        </div>
         <el-input
           v-model="cssContent"
           type="textarea"
@@ -62,6 +66,7 @@ import { useResumeStore } from '../../store/modules/resume'
 import { useStyleStore } from '../../store/modules/style'
 import { generateHtml } from '../../utils/htmlGenerator'
 import { saveContext } from '../../api/resume'
+import { updateStyleContent as apiUpdateStyleContent } from '../../api/style'
 
 const resumeStore = useResumeStore()
 const styleStore = useStyleStore()
@@ -69,6 +74,7 @@ const styleStore = useStyleStore()
 const activeTab = ref('preview')
 const previewIframe = ref(null)
 const cssContent = ref('')
+const cssSaveStatus = ref('')
 
 let cssSaveTimer = null
 let contextSaveTimer = null
@@ -124,14 +130,26 @@ function saveContextDebounced() {
 }
 
 function onCssChange() {
+  cssSaveStatus.value = ''
   if (cssSaveTimer) clearTimeout(cssSaveTimer)
 
   cssSaveTimer = setTimeout(() => {
     if (styleStore.currentStyle) {
       styleStore.currentStyle.cssContent = cssContent.value
       updatePreview()
+      saveCssToDb()
     }
   }, 1000)
+}
+
+async function saveCssToDb() {
+  if (!styleStore.currentStyle) return
+  try {
+    await apiUpdateStyleContent(styleStore.currentStyle.id, cssContent.value)
+    cssSaveStatus.value = '已保存'
+  } catch {
+    cssSaveStatus.value = '保存失败'
+  }
 }
 
 async function copyHtml() {
@@ -245,18 +263,45 @@ async function copyHtml() {
 
 .css-editor-container {
   height: 100%;
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.css-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-muted);
+}
+
+.css-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+}
+
+.save-status {
+  font-size: 12px;
+  color: transparent;
+  transition: color var(--transition-fast);
+}
+
+.save-status.has-status {
+  color: var(--color-success);
 }
 
 .css-editor-container :deep(.el-textarea__inner) {
-  height: 100%;
+  flex: 1;
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
   font-size: 13px;
   line-height: 1.7;
   background: var(--color-foreground);
   color: #e2e8f0;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  border-radius: 0;
+  border: none;
   padding: 16px;
 }
 

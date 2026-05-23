@@ -15,3 +15,7 @@ export function switchStyle(resumeId, styleId) {
 export function saveStyleConfig(id, config) {
   return request.put(`/resumes/${id}/style-config`, { styleConfig: config })
 }
+
+export function updateStyleContent(id, cssContent) {
+  return request.put(`/styles/${id}/content`, { cssContent })
+}
