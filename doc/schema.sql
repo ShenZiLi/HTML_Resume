@@ -46,9 +46,7 @@ CREATE TABLE `resume`
     `updated_at`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     INDEX `idx_user_id` (`user_id`),
-    INDEX `idx_style_id` (`style_id`),
-    FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-    FOREIGN KEY (`style_id`) REFERENCES `css_style` (`id`)
+    INDEX `idx_style_id` (`style_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT ='简历主表';
@@ -98,9 +96,7 @@ CREATE TABLE `resume_module`
     PRIMARY KEY (`id`),
     INDEX `idx_resume_type` (`resume_id`, `module_type`),
     INDEX `idx_resume_sort` (`resume_id`, `sort_order`),
-    INDEX `idx_config_id` (`config_id`),
-    FOREIGN KEY (`resume_id`) REFERENCES `resume` (`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`config_id`) REFERENCES `module_type_config` (`id`)
+    INDEX `idx_config_id` (`config_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT ='简历模块表';
