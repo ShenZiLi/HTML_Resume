@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.htmlresume.mapper.ResumeModuleMapper">
+
+    <!-- Query modules by resume_id with config info -->
+    <select id="selectModulesWithConfig" resultType="java.util.Map">
+        SELECT
+            rm.id,
+            rm.resume_id,
+            rm.module_type,
+            rm.config_id,
+            rm.content,
+            rm.sort_order,
+            rm.created_at,
+            rm.updated_at,
+            mtc.config_group,
+            mtc.field_key,
+            mtc.field_name,
+            mtc.field_type,
+            mtc.layout_type,
+            mtc.html_tag,
+            mtc.css_class,
+            mtc.css_style,
+            mtc.placeholder,
+            mtc.options,
+            mtc.default_value,
+            mtc.validation,
+            mtc.is_required,
+            mtc.is_visible,
+            mtc.is_editable
+        FROM resume_module rm
+        LEFT JOIN module_type_config mtc ON rm.config_id = mtc.id
+        WHERE rm.resume_id = #{resumeId}
+        ORDER BY rm.sort_order ASC
+    </select>
+
+    <!-- Batch update sort_order -->
+    <update id="batchUpdateSortOrder">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE resume_module
+            SET sort_order = #{item.sortOrder},
+                updated_at = NOW()
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+
+</mapper>
