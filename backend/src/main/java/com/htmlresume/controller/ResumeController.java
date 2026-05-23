@@ -1,5 +1,6 @@
 package com.htmlresume.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.htmlresume.common.Result;
 import com.htmlresume.dto.ResumeWithModulesDTO;
 import com.htmlresume.entity.Resume;
@@ -21,6 +22,9 @@ public class ResumeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @PostMapping
     public Result<Resume> createResume(
@@ -83,7 +87,11 @@ public class ResumeController {
         Resume resume = resumeService.getById(id);
         if (resume != null) {
             Object config = body.get("styleConfig");
-            resume.setStyleConfig((java.util.Map<String, Object>) config);
+            try {
+                resume.setStyleConfig(objectMapper.writeValueAsString(config));
+            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                return Result.error("Invalid style config");
+            }
             resumeService.updateById(resume);
         }
         return Result.success();

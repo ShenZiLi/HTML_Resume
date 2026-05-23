@@ -31,7 +31,7 @@ public class ModuleServiceImpl extends ServiceImpl<ResumeModuleMapper, ResumeMod
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResumeModule addModule(Long resumeId, String moduleType, Map<String, Object> content) {
+    public ResumeModule addModule(Long resumeId, String moduleType, Map<String, Object> content, Integer sortOrder) {
         LambdaQueryWrapper<ModuleTypeConfig> configWrapper = new LambdaQueryWrapper<>();
         configWrapper.eq(ModuleTypeConfig::getModuleType, moduleType);
         configWrapper.last("LIMIT 1");
@@ -44,22 +44,27 @@ public class ModuleServiceImpl extends ServiceImpl<ResumeModuleMapper, ResumeMod
             throw new RuntimeException("Failed to serialize content", e);
         }
 
-        LambdaQueryWrapper<ResumeModule> maxSortWrapper = new LambdaQueryWrapper<>();
-        maxSortWrapper.eq(ResumeModule::getResumeId, resumeId);
-        maxSortWrapper.orderByDesc(ResumeModule::getSortOrder);
-        maxSortWrapper.last("LIMIT 1");
-        ResumeModule maxSortModule = getOne(maxSortWrapper);
+        int finalSortOrder;
+        if (sortOrder != null) {
+            finalSortOrder = sortOrder;
+        } else {
+            LambdaQueryWrapper<ResumeModule> maxSortWrapper = new LambdaQueryWrapper<>();
+            maxSortWrapper.eq(ResumeModule::getResumeId, resumeId);
+            maxSortWrapper.orderByDesc(ResumeModule::getSortOrder);
+            maxSortWrapper.last("LIMIT 1");
+            ResumeModule maxSortModule = getOne(maxSortWrapper);
 
-        int nextSortOrder = (maxSortModule != null && maxSortModule.getSortOrder() != null)
-                ? maxSortModule.getSortOrder() + 1
-                : 1;
+            finalSortOrder = (maxSortModule != null && maxSortModule.getSortOrder() != null)
+                    ? maxSortModule.getSortOrder() + 1
+                    : 1;
+        }
 
         ResumeModule module = ResumeModule.builder()
                 .resumeId(resumeId)
                 .moduleType(moduleType)
                 .configId(config != null ? config.getId() : null)
                 .content(contentJson)
-                .sortOrder(nextSortOrder)
+                .sortOrder(finalSortOrder)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface ModuleService extends IService<ResumeModule> {
 
-    ResumeModule addModule(Long resumeId, String moduleType, Map<String, Object> content);
+    ResumeModule addModule(Long resumeId, String moduleType, Map<String, Object> content, Integer sortOrder);
 
     ResumeModule updateModuleContent(Long moduleId, Map<String, Object> content);
 

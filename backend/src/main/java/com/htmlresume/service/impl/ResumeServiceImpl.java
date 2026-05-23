@@ -63,7 +63,7 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeMapper, Resume> impleme
             defaultContent.put("items", List.of());
 
             try {
-                moduleService.addModule(resume.getId(), moduleType, defaultContent);
+                moduleService.addModule(resume.getId(), moduleType, defaultContent, i + 1);
             } catch (Exception e) {
             }
         }
@@ -78,7 +78,11 @@ public class ResumeServiceImpl extends ServiceImpl<ResumeMapper, Resume> impleme
             return null;
         }
 
-        List<ResumeModule> modules = getBaseMapper().selectModulesByResumeId(resumeId);
+        List<ResumeModule> modules = moduleService.list(
+                new LambdaQueryWrapper<ResumeModule>()
+                        .eq(ResumeModule::getResumeId, resumeId)
+                        .orderByAsc(ResumeModule::getSortOrder)
+        );
 
         CssStyle style = null;
         if (resume.getStyleId() != null) {

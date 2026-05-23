@@ -369,19 +369,19 @@ VALUES ('basic_info_default', 'basic_info', 'name', '姓名', 'text', 'inline', 
 
 -- 初始化模块类型配置 - education
 INSERT INTO `module_type_config` (`config_group`, `module_type`, `field_key`, `field_name`, `field_type`, `layout_type`,
-                                  `html_tag`, `css_class`, `placeholder`, `is_required`, `sort_order`)
-VALUES ('education_default', 'education', 'school', '学校', 'text', 'timeline', 'div', 'school', '请输入学校', 1, 1),
+                                  `html_tag`, `css_class`, `placeholder`, `is_required`, `sort_order`, `options`)
+VALUES ('education_default', 'education', 'school', '学校', 'text', 'timeline', 'div', 'school', '请输入学校', 1, 1, NULL),
        ('education_default', 'education', 'department', '院系', 'text', 'inline', 'span', 'department', '请输入院系', 0,
-        2),
-       ('education_default', 'education', 'major', '专业', 'text', 'inline', 'div', 'major', '请输入专业', 1, 3),
+        2, NULL),
+       ('education_default', 'education', 'major', '专业', 'text', 'inline', 'div', 'major', '请输入专业', 1, 3, NULL),
        ('education_default', 'education', 'degree', '学历', 'select', 'badge', 'span', 'degree', '', 1, 4,
-        '{"options": [{"label": "博士", "value": "博士"}, {"label": "硕士", "value": "硕士"}, {"label": "本科", "value": "本科"}, {"label": "大专", "value": "大专"}]}'),
-       ('education_default', 'education', 'startDate', '开始时间', 'date', 'split', 'span', 'date', '', 1, 5),
-       ('education_default', 'education', 'endDate', '结束时间', 'date', 'split', 'span', 'date', '', 1, 6),
-       ('education_default', 'education', 'is211', '211', 'switch', 'badge', 'span', 'tag', '', 0, 7),
-       ('education_default', 'education', 'is985', '985', 'switch', 'badge', 'span', 'tag', '', 0, 8),
-       ('education_default', 'education', 'isDoubleFirst', '双一流', 'switch', 'badge', 'span', 'tag', '', 0, 9),
-       ('education_default', 'education', 'schoolLogo', '学校Logo', 'image', 'split', 'img', 'school-logo', '', 0, 10);
+        '[{"label": "博士", "value": "博士"}, {"label": "硕士", "value": "硕士"}, {"label": "本科", "value": "本科"}, {"label": "大专", "value": "大专"}]'),
+       ('education_default', 'education', 'startDate', '开始时间', 'date', 'split', 'span', 'date', '', 1, 5, NULL),
+       ('education_default', 'education', 'endDate', '结束时间', 'date', 'split', 'span', 'date', '', 1, 6, NULL),
+       ('education_default', 'education', 'is211', '211', 'switch', 'badge', 'span', 'tag', '', 0, 7, NULL),
+       ('education_default', 'education', 'is985', '985', 'switch', 'badge', 'span', 'tag', '', 0, 8, NULL),
+       ('education_default', 'education', 'isDoubleFirst', '双一流', 'switch', 'badge', 'span', 'tag', '', 0, 9, NULL),
+       ('education_default', 'education', 'schoolLogo', '学校Logo', 'image', 'split', 'img', 'school-logo', '', 0, 10, NULL);
 
 -- 初始化模块类型配置 - work_experience
 INSERT INTO `module_type_config` (`config_group`, `module_type`, `field_key`, `field_name`, `field_type`, `layout_type`,

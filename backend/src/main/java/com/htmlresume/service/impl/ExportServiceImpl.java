@@ -1,5 +1,6 @@
 package com.htmlresume.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +54,11 @@ public class ExportServiceImpl implements ExportService {
             style = styleService.getStyleById(resume.getStyleId());
         }
 
-        List<ResumeModule> modules = resumeService.getBaseMapper().selectModulesByResumeId(resumeId);
+        List<ResumeModule> modules = moduleService.list(
+                new LambdaQueryWrapper<ResumeModule>()
+                        .eq(ResumeModule::getResumeId, resumeId)
+                        .orderByAsc(ResumeModule::getSortOrder)
+        );
         if (modules == null) {
             modules = Collections.emptyList();
         }
