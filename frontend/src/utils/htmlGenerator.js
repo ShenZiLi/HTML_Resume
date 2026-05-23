@@ -143,13 +143,13 @@ function generateWorkExperience(content, skipTitle = false) {
   const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' - ')
 
   const respHtml = responsibilities.length
-    ? `<ul class="description">${responsibilities.filter(r => r.trim()).map(r => `<li>${r}</li>`).join('\n        ')}</ul>`
+    ? `<ul class="description">${responsibilities.filter(r => r.trim()).map(r => `<li>${boldMarkdown(r)}</li>`).join('\n        ')}</ul>`
     : ''
 
   const projectHtml = (projectName || projectDescription)
     ? `<div class="project" style="margin-top:1rem;">
         ${projectName ? `<div class="project-title">${projectName}</div>` : ''}
-        ${projectDescription ? `<p class="description" style="border-left:none;padding-left:0;margin-top:0.5rem;">${projectDescription}</p>` : ''}
+        ${projectDescription ? `<p class="description" style="border-left:none;padding-left:0;margin-top:0.5rem;">${boldMarkdown(projectDescription)}</p>` : ''}
       </div>`
     : ''
 
@@ -181,15 +181,15 @@ function generateProject(content, skipTitle = false) {
   const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' – ')
 
   const descHtml = description
-    ? `<div class="description"><p><strong>项目描述</strong>：${description}</p></div>`
+    ? `<div class="description"><p><strong>项目描述</strong>：${boldMarkdown(description)}</p></div>`
     : ''
 
   const respHtml = responsibilities.length
-    ? `<div class="description"><p><strong>工作内容</strong></p><ul>${responsibilities.filter(r => r.trim()).map(r => `<li>${r}</li>`).join('\n        ')}</ul></div>`
+    ? `<div class="description"><p><strong>工作内容</strong></p><ul>${responsibilities.filter(r => r.trim()).map(r => `<li>${boldMarkdown(r)}</li>`).join('\n        ')}</ul></div>`
     : ''
 
   const achHtml = achievements.length
-    ? `<div class="description"><p><strong>项目成果</strong></p><ul>${achievements.filter(a => a.trim()).map(a => `<li>${a}</li>`).join('\n        ')}</ul></div>`
+    ? `<div class="description"><p><strong>项目成果</strong></p><ul>${achievements.filter(a => a.trim()).map(a => `<li>${boldMarkdown(a)}</li>`).join('\n        ')}</ul></div>`
     : ''
 
   return `<div class="section">
@@ -218,19 +218,19 @@ function generateAward(content, skipTitle = false) {
       if (Array.isArray(parsed)) {
         certTags = parsed.flatMap(cat => {
           const items = cat.items || []
-          return items.map(i => `<span class="certificate-tag">${i}</span>`).join('\n      ')
+          return items.map(i => `<span class="certificate-tag">${boldMarkdown(i)}</span>`).join('\n      ')
         }).join('\n      ')
       }
     } catch {
-      certTags = `<span class="certificate-tag">${categories}</span>`
+      certTags = `<span class="certificate-tag">${boldMarkdown(categories)}</span>`
     }
   } else if (Array.isArray(categories)) {
     certTags = categories
       .flatMap(cat => {
         if (typeof cat === 'object' && cat.items) {
-          return cat.items.map(i => `<span class="certificate-tag">${i}</span>`)
+          return cat.items.map(i => `<span class="certificate-tag">${boldMarkdown(i)}</span>`)
         }
-        return [`<span class="certificate-tag">${cat}</span>`]
+        return [`<span class="certificate-tag">${boldMarkdown(cat)}</span>`]
       })
       .join('\n      ')
   }
@@ -241,6 +241,22 @@ function generateAward(content, skipTitle = false) {
       ${certTags}
     </div>
   </div>`
+}
+
+function escapeHtml(str) {
+  if (!str) return ''
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+function boldMarkdown(str) {
+  if (!str) return ''
+  const escaped = escapeHtml(str)
+  return escaped.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
 }
 
 export { generateHtml }
