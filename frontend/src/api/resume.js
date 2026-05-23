@@ -27,3 +27,7 @@ export function exportHtml(id) {
 export function exportJson(id) {
   return request.get(`/resumes/${id}`)
 }
+
+export function saveContext(id, context) {
+  return request.put(`/resumes/${id}/context`, { context })
+}

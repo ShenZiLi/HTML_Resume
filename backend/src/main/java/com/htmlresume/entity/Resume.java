@@ -33,6 +33,9 @@ public class Resume {
     @TableField("style_config")
     private String styleConfig;
 
+    @TableField("context")
+    private String context;
+
     @TableField("created_at")
     private LocalDateTime createdAt;
 

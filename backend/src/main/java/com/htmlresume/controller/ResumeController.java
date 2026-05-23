@@ -81,4 +81,16 @@ public class ResumeController {
         }
         return Result.success();
     }
+
+    @PutMapping("/{id}/context")
+    public Result<Void> updateContext(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        Resume resume = resumeService.getById(id);
+        if (resume != null) {
+            resume.setContext(body.get("context"));
+            resumeService.updateById(resume);
+        }
+        return Result.success();
+    }
 }

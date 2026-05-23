@@ -10,6 +10,13 @@
       </span>
       <span
         class="tab"
+        :class="{ active: activeTab === 'html' }"
+        @click="activeTab = 'html'"
+      >
+        HTML
+      </span>
+      <span
+        class="tab"
         :class="{ active: activeTab === 'css' }"
         @click="activeTab = 'css'"
       >
@@ -27,6 +34,14 @@
         />
       </div>
 
+      <div v-show="activeTab === 'html'" class="html-viewer-container">
+        <div class="html-viewer-header">
+          <span class="html-viewer-title">HTML 源码</span>
+          <el-button size="small" @click="copyHtml">复制</el-button>
+        </div>
+        <pre class="html-viewer"><code>{{ htmlPreview }}</code></pre>
+      </div>
+
       <div v-show="activeTab === 'css'" class="css-editor-container">
         <el-input
           v-model="cssContent"
@@ -42,9 +57,11 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { ElMessage } from 'element-plus'
 import { useResumeStore } from '../../store/modules/resume'
 import { useStyleStore } from '../../store/modules/style'
 import { generateHtml } from '../../utils/htmlGenerator'
+import { saveContext } from '../../api/resume'
 
 const resumeStore = useResumeStore()
 const styleStore = useStyleStore()
@@ -54,6 +71,7 @@ const previewIframe = ref(null)
 const cssContent = ref('')
 
 let cssSaveTimer = null
+let contextSaveTimer = null
 
 watch(
   () => styleStore.currentStyle,
@@ -77,6 +95,7 @@ watch(htmlPreview, () => {
   if (activeTab.value === 'preview') {
     updatePreview()
   }
+  saveContextDebounced()
 }, { deep: true })
 
 watch(activeTab, (tab) => {
@@ -95,6 +114,15 @@ function updatePreview() {
   doc.close()
 }
 
+function saveContextDebounced() {
+  if (contextSaveTimer) clearTimeout(contextSaveTimer)
+  contextSaveTimer = setTimeout(() => {
+    if (resumeStore.currentResume && htmlPreview.value) {
+      saveContext(resumeStore.currentResume.id, htmlPreview.value).catch(() => {})
+    }
+  }, 2000)
+}
+
 function onCssChange() {
   if (cssSaveTimer) clearTimeout(cssSaveTimer)
 
@@ -104,6 +132,15 @@ function onCssChange() {
       updatePreview()
     }
   }, 1000)
+}
+
+async function copyHtml() {
+  try {
+    await navigator.clipboard.writeText(htmlPreview.value)
+    ElMessage.success('HTML 已复制到剪贴板')
+  } catch {
+    ElMessage.error('复制失败')
+  }
 }
 </script>
 
@@ -169,6 +206,41 @@ function onCssChange() {
   border-radius: var(--radius-md);
   background: var(--color-card);
   box-shadow: var(--shadow-md);
+}
+
+.html-viewer-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.html-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-muted);
+}
+
+.html-viewer-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+}
+
+.html-viewer {
+  flex: 1;
+  overflow: auto;
+  margin: 0;
+  padding: 16px;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .css-editor-container {

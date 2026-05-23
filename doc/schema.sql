@@ -41,6 +41,7 @@ CREATE TABLE `resume`
     `title`        VARCHAR(100) NOT NULL DEFAULT '我的简历' COMMENT '简历标题',
     `style_id`     BIGINT COMMENT '样式ID',
     `style_config` JSON COMMENT '自定义样式覆盖配置',
+    `context`      MEDIUMTEXT COMMENT '预览生成的HTML内容',
     `created_at`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
