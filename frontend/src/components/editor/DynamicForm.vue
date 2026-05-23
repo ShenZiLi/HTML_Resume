@@ -13,6 +13,37 @@
           @change="emitUpdate"
         />
 
+        <template v-else-if="field.layoutType === 'list'">
+          <div class="list-field">
+            <div
+              v-for="(_, index) in getListField(field.fieldKey)"
+              :key="index"
+              class="list-item"
+            >
+              <el-input
+                v-model="localData[field.fieldKey][index]"
+                type="textarea"
+                :rows="2"
+                :placeholder="`${field.placeholder || '请输入内容'} ${index + 1}`"
+                @change="emitUpdate"
+              />
+              <el-button
+                type="danger"
+                link
+                @click="removeListItem(field.fieldKey, index)"
+              >
+                删除
+              </el-button>
+            </div>
+            <el-button
+              size="small"
+              @click="addListItem(field.fieldKey)"
+            >
+              + 添加{{ field.fieldName }}
+            </el-button>
+          </div>
+        </template>
+
         <el-input
           v-else-if="field.fieldType === 'textarea'"
           v-model="localData[field.fieldKey]"
@@ -97,6 +128,28 @@ watch(
   { deep: true }
 )
 
+function getListField(key) {
+  if (!Array.isArray(localData.value[key])) {
+    localData.value[key] = []
+  }
+  return localData.value[key]
+}
+
+function addListItem(key) {
+  if (!Array.isArray(localData.value[key])) {
+    localData.value[key] = []
+  }
+  localData.value[key].push('')
+  emitUpdate()
+}
+
+function removeListItem(key, index) {
+  if (Array.isArray(localData.value[key])) {
+    localData.value[key].splice(index, 1)
+    emitUpdate()
+  }
+}
+
 function emitUpdate() {
   emit('update', { ...localData.value })
 }
@@ -111,7 +164,6 @@ function emitUpdate() {
 .dynamic-form :deep(.el-form-item__label) {
   font-weight: 500;
   font-size: 13px;
-  color: var(--color-foreground);
   padding-bottom: 4px;
 }
 
@@ -119,13 +171,18 @@ function emitUpdate() {
   margin-bottom: 16px;
 }
 
-.dynamic-form :deep(.el-input__wrapper),
-.dynamic-form :deep(.el-textarea__inner) {
-  border-radius: var(--radius-sm);
-  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+.list-field {
+  width: 100%;
 }
 
-.dynamic-form :deep(.el-input__wrapper:focus-within) {
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+.list-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: flex-start;
+}
+
+.list-item .el-input {
+  flex: 1;
 }
 </style>

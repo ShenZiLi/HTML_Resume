@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class BatchSortRequest {
-    private Long resumeId;
+    private Long resume_id;
     private List<ModuleSortItem> modules;
 }

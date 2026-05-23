@@ -2,13 +2,11 @@ package com.htmlresume.controller;
 
 import com.htmlresume.common.Result;
 import com.htmlresume.dto.BatchSortRequest;
-import com.htmlresume.dto.ModuleSortItem;
 import com.htmlresume.entity.ResumeModule;
 import com.htmlresume.service.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -47,7 +45,7 @@ public class ModuleController {
 
     @PutMapping("/sort")
     public Result<Void> batchUpdateSort(@RequestBody BatchSortRequest request) {
-        moduleService.batchUpdateSort(request.getResumeId(), request.getModules());
+        moduleService.batchUpdateSort(request.getResume_id(), request.getModules());
         return Result.success();
     }
 }

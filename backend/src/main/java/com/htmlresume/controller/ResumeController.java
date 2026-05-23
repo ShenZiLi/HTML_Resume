@@ -1,18 +1,17 @@
 package com.htmlresume.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.htmlresume.common.Result;
 import com.htmlresume.dto.ResumeWithModulesDTO;
 import com.htmlresume.entity.Resume;
-import com.htmlresume.entity.User;
 import com.htmlresume.service.ResumeService;
-import com.htmlresume.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+// 暂未实现用户注册登录功能，当前通过 X-User-Id 请求头传递用户ID
 @RestController
 @RequestMapping("/api/v1/resumes")
 public class ResumeController {
@@ -20,26 +19,18 @@ public class ResumeController {
     @Autowired
     private ResumeService resumeService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @PostMapping
     public Result<Resume> createResume(
-            @RequestHeader("X-Device-Id") String deviceId,
+            @RequestHeader("X-User-Id") Long userId,
             @RequestBody Map<String, String> body) {
-        User user = userService.initOrCreateUser(deviceId);
         String title = body.getOrDefault("title", "我的简历");
-        Resume resume = resumeService.createResume(user.getId(), title);
+        Resume resume = resumeService.createResume(userId, title);
         return Result.success(resume);
     }
 
     @GetMapping
-    public Result<List<Resume>> listResumes(@RequestHeader("X-Device-Id") String deviceId) {
-        User user = userService.initOrCreateUser(deviceId);
-        List<Resume> resumes = resumeService.listByUserId(user.getId());
+    public Result<List<Resume>> listResumes(@RequestHeader("X-User-Id") Long userId) {
+        List<Resume> resumes = resumeService.listByUserId(userId);
         return Result.success(resumes);
     }
 
@@ -80,11 +71,11 @@ public class ResumeController {
             @RequestBody Map<String, Object> body) {
         Resume resume = resumeService.getById(id);
         if (resume != null) {
-            Object config = body.get("styleConfig");
             try {
-                resume.setStyleConfig(objectMapper.writeValueAsString(config));
-            } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-                return Result.error("Invalid style config");
+                ObjectMapper mapper = new ObjectMapper();
+                resume.setStyleConfig(mapper.writeValueAsString(body));
+            } catch (Exception e) {
+                resume.setStyleConfig("{}");
             }
             resumeService.updateById(resume);
         }

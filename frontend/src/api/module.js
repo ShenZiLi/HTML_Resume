@@ -14,7 +14,7 @@ export function deleteModule(id) {
 
 export function batchUpdateSort(resumeId, modules) {
   return request.put('/modules/sort', {
-    resumeId,
+    resume_id: resumeId,
     modules: modules.map(m => ({ id: m.id, sortOrder: m.sortOrder }))
   })
 }

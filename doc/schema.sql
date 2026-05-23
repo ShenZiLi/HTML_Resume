@@ -415,8 +415,10 @@ VALUES ('project_default', 'project', 'projectName', '项目名称', 'text', 'ti
         '如: SpringBoot, MySQL, Redis', 1, 5),
        ('project_default', 'project', 'description', '项目描述', 'textarea', 'block', 'p', 'description',
         '请输入项目描述', 1, 6),
+       ('project_default', 'project', 'responsibilities', '工作内容', 'textarea', 'list', 'ul', 'responsibilities',
+        '每行一条工作内容', 0, 7),
        ('project_default', 'project', 'achievements', '项目成果', 'textarea', 'list', 'ul', 'achievements',
-        '每行一条成果', 0, 7);
+        '每行一条成果', 0, 8);
 
 -- 初始化模块类型配置 - award
 INSERT INTO `module_type_config` (`config_group`, `module_type`, `field_key`, `field_name`, `field_type`, `layout_type`,

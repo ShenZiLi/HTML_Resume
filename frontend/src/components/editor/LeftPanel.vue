@@ -131,15 +131,23 @@ async function handleDelete(mod) {
   }
 }
 
-function onDragEnd() {
+async function onDragEnd() {
+  if (!resumeStore.currentResume) return
+
   const sortedModules = resumeStore.modules.map((mod, index) => ({
     id: mod.id,
     sortOrder: index
   }))
 
-  batchUpdateSort(resumeStore.currentResume.id, sortedModules).catch(() => {
+  try {
+    await batchUpdateSort(resumeStore.currentResume.id, sortedModules)
+    resumeStore.modules.forEach((mod, index) => {
+      mod.sortOrder = index
+    })
+    ElMessage.success('排序已保存')
+  } catch (error) {
     ElMessage.error('保存排序失败')
-  })
+  }
 }
 </script>
 

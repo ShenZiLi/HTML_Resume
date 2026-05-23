@@ -54,41 +54,76 @@ function generateBasicInfo(content) {
   const wechat = content.wechat || ''
   const github = content.github || ''
   const blog = content.blog || ''
+  const leetcode = content.leetcode || ''
+  const workYears = content.workYears || ''
+  const targetCity = content.targetCity || ''
+  const hometown = content.hometown || ''
+  const summary = content.summary || ''
+  const salaryRange = content.salaryRange || ''
+  const expectedEntryDate = content.expectedEntryDate || ''
+  const isPartyMember = content.isPartyMember || false
+  const photo = content.photo || ''
 
   const contactItems = []
   if (phone) contactItems.push(`<span>${phone}</span>`)
   if (email) contactItems.push(`<span>${email}</span>`)
   if (wechat) contactItems.push(`<span>微信: ${wechat}</span>`)
-  if (github) contactItems.push(`<span>${github}</span>`)
-  if (blog) contactItems.push(`<span>${blog}</span>`)
+  if (github) contactItems.push(`<a href="${github}">${github}</a>`)
+  if (blog) contactItems.push(`<a href="${blog}">${blog}</a>`)
+  if (leetcode) contactItems.push(`<span>LeetCode: ${leetcode}</span>`)
+  if (workYears) contactItems.push(`<span>${workYears}</span>`)
+  if (targetCity) contactItems.push(`<span>${targetCity}</span>`)
+  if (hometown) contactItems.push(`<span>籍贯: ${hometown}</span>`)
+  if (salaryRange) contactItems.push(`<span>${salaryRange}</span>`)
+  if (expectedEntryDate) contactItems.push(`<span>到岗: ${expectedEntryDate}</span>`)
+  if (isPartyMember) contactItems.push(`<span>中共党员</span>`)
+
+  const photoHtml = photo ? `<img class="avatar" src="${photo}" alt="照片" />` : ''
 
   return `<header>
+    ${photoHtml}
     <h1 class="name">${name}</h1>
     ${jobIntention ? `<p class="job-intention">${jobIntention}</p>` : ''}
     ${contactItems.length ? `<div class="contact-info">${contactItems.join(' | ')}</div>` : ''}
+    ${summary ? `<p class="summary">${summary}</p>` : ''}
   </header>`
 }
 
 function generateEducation(content) {
   const school = content.school || ''
+  const department = content.department || ''
   const major = content.major || ''
   const degree = content.degree || ''
   const startDate = content.startDate || ''
   const endDate = content.endDate || ''
+  const is211 = content.is211 || false
+  const is985 = content.is985 || false
+  const isDoubleFirst = content.isDoubleFirst || false
+  const schoolLogo = content.schoolLogo || ''
 
   const dateStr = [startDate, endDate].filter(Boolean).join(' - ')
+
+  const tags = []
+  if (is211) tags.push('<span class="certificate-tag">211</span>')
+  if (is985) tags.push('<span class="certificate-tag">985</span>')
+  if (isDoubleFirst) tags.push('<span class="certificate-tag">双一流</span>')
+
+  const logoHtml = schoolLogo ? `<img class="school-logo" src="${schoolLogo}" alt="${school}" />` : ''
 
   return `<div class="section">
     <h2 class="section-title">教育经历</h2>
     <div class="timeline-item">
+      ${logoHtml}
       <div class="timeline-header">
         <span class="school">${school}</span>
         ${dateStr ? `<span class="date">${dateStr}</span>` : ''}
       </div>
       <div>
+        ${department ? `<span class="department">${department}</span>` : ''}
         ${major ? `<span class="major">${major}</span>` : ''}
         ${degree ? ` · <span class="degree">${degree}</span>` : ''}
       </div>
+      ${tags.length ? `<div style="margin-top:0.5rem;">${tags.join(' ')}</div>` : ''}
     </div>
   </div>`
 }
@@ -97,6 +132,8 @@ function generateWorkExperience(content) {
   const company = content.company || ''
   const position = content.position || ''
   const techStack = content.techStack || ''
+  const projectName = content.projectName || ''
+  const projectDescription = content.projectDescription || ''
   const responsibilities = Array.isArray(content.responsibilities) ? content.responsibilities : []
   const startDate = content.startDate || ''
   const endDate = content.endDate || ''
@@ -105,6 +142,13 @@ function generateWorkExperience(content) {
 
   const respHtml = responsibilities.length
     ? `<ul class="description">${responsibilities.filter(r => r.trim()).map(r => `<li>${r}</li>`).join('\n        ')}</ul>`
+    : ''
+
+  const projectHtml = (projectName || projectDescription)
+    ? `<div class="project" style="margin-top:1rem;">
+        ${projectName ? `<div class="project-title">${projectName}</div>` : ''}
+        ${projectDescription ? `<p class="description" style="border-left:none;padding-left:0;margin-top:0.5rem;">${projectDescription}</p>` : ''}
+      </div>`
     : ''
 
   return `<div class="section">
@@ -117,6 +161,7 @@ function generateWorkExperience(content) {
       ${position ? `<span class="position">${position}</span>` : ''}
       ${techStack ? `<p style="margin-top:0.5rem;font-size:0.9rem;color:var(--gray);">技术栈：${techStack}</p>` : ''}
       ${respHtml}
+      ${projectHtml}
     </div>
   </div>`
 }
@@ -128,24 +173,34 @@ function generateProject(content) {
   const endDate = content.endDate || ''
   const techStack = content.techStack || ''
   const description = content.description || ''
+  const responsibilities = Array.isArray(content.responsibilities) ? content.responsibilities : []
   const achievements = Array.isArray(content.achievements) ? content.achievements : []
 
-  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' - ')
+  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' – ')
+
+  const descHtml = description
+    ? `<div class="description"><p><strong>项目描述</strong>：${description}</p></div>`
+    : ''
+
+  const respHtml = responsibilities.length
+    ? `<div class="description"><p><strong>工作内容</strong></p><ul>${responsibilities.filter(r => r.trim()).map(r => `<li>${r}</li>`).join('\n        ')}</ul></div>`
+    : ''
 
   const achHtml = achievements.length
-    ? `<ul class="description">${achievements.filter(a => a.trim()).map(a => `<li>${a}</li>`).join('\n        ')}</ul>`
+    ? `<div class="description"><p><strong>项目成果</strong></p><ul>${achievements.filter(a => a.trim()).map(a => `<li>${a}</li>`).join('\n        ')}</ul></div>`
     : ''
 
   return `<div class="section">
     <h2 class="section-title">项目经历</h2>
     <div class="project">
-      <div class="timeline-header">
+      <div class="project-meta">
         <span class="project-title">${projectName}</span>
         ${dateStr ? `<span class="date">${dateStr}</span>` : ''}
       </div>
-      ${role ? `<span class="position">${role}</span>` : ''}
+      ${role ? `<div class="company">${role}</div>` : ''}
       ${techStack ? `<p style="margin-top:0.5rem;font-size:0.9rem;color:var(--gray);">技术栈：${techStack}</p>` : ''}
-      ${description ? `<p class="description" style="border-left:none;padding-left:0;margin-top:0.5rem;">${description}</p>` : ''}
+      ${descHtml}
+      ${respHtml}
       ${achHtml}
     </div>
   </div>`

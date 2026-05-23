@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { getOrCreateDeviceId } from '../utils/deviceId'
+import { getUserId } from '../utils/deviceId'
 
+// 暂未实现用户注册登录功能，当前写死 userId 为 1
 const request = axios.create({
   baseURL: '/api/v1',
   timeout: 10000
@@ -8,10 +9,7 @@ const request = axios.create({
 
 request.interceptors.request.use(
   (config) => {
-    const deviceId = getOrCreateDeviceId()
-    if (deviceId) {
-      config.headers['X-Device-Id'] = deviceId
-    }
+    config.headers['X-User-Id'] = getUserId()
     return config
   },
   (error) => {
