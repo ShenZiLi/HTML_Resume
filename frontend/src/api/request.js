@@ -21,6 +21,9 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
   (response) => {
+    if (response.config.responseType === 'text' || response.config.responseType === 'blob') {
+      return response.data
+    }
     const result = response.data
     if (result && result.code === 200) {
       return result.data

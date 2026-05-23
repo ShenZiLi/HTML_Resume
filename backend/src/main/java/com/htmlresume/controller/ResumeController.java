@@ -30,10 +30,7 @@ public class ResumeController {
     public Result<Resume> createResume(
             @RequestHeader("X-Device-Id") String deviceId,
             @RequestBody Map<String, String> body) {
-        User user = userService.getByDeviceId(deviceId);
-        if (user == null) {
-            return Result.error("User not found");
-        }
+        User user = userService.initOrCreateUser(deviceId);
         String title = body.getOrDefault("title", "我的简历");
         Resume resume = resumeService.createResume(user.getId(), title);
         return Result.success(resume);
@@ -41,10 +38,7 @@ public class ResumeController {
 
     @GetMapping
     public Result<List<Resume>> listResumes(@RequestHeader("X-Device-Id") String deviceId) {
-        User user = userService.getByDeviceId(deviceId);
-        if (user == null) {
-            return Result.error("User not found");
-        }
+        User user = userService.initOrCreateUser(deviceId);
         List<Resume> resumes = resumeService.listByUserId(user.getId());
         return Result.success(resumes);
     }

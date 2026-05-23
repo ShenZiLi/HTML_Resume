@@ -125,8 +125,8 @@ async function handleExportHtml() {
     return
   }
   try {
-    const res = await exportHtml(resumeStore.currentResume.id)
-    const blob = new Blob([res.data || res], { type: 'text/html' })
+    const html = await exportHtml(resumeStore.currentResume.id)
+    const blob = new Blob([html], { type: 'text/html' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -145,8 +145,7 @@ async function handleExportJson() {
     return
   }
   try {
-    const res = await exportJson(resumeStore.currentResume.id)
-    const data = res.data || res
+    const data = await exportJson(resumeStore.currentResume.id)
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
