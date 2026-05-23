@@ -366,7 +366,8 @@ VALUES ('basic_info_default', 'basic_info', 'name', '姓名', 'text', 'inline', 
         '', 0, 14),
        ('basic_info_default', 'basic_info', 'isPartyMember', '党员', 'switch', 'inline', 'span', 'contact-item', '', 0,
         15),
-       ('basic_info_default', 'basic_info', 'photo', '照片', 'image', 'split', 'img', 'avatar', '', 0, 16);
+       ('basic_info_default', 'basic_info', 'photo', '照片', 'image', 'split', 'img', 'avatar', '', 0, 16),
+       ('basic_info_default', 'basic_info', 'photoBorder', '照片边框', 'switch', 'inline', 'span', 'photo-border', '', 0, 17);
 
 -- 初始化模块类型配置 - education
 INSERT INTO `module_type_config` (`config_group`, `module_type`, `field_key`, `field_name`, `field_type`, `layout_type`,

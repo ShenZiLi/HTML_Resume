@@ -3,6 +3,7 @@ function generateHtml(resumeData, modules, cssStyle) {
 
   let headerHtml = ''
   const sectionHtmls = []
+  const generatedSections = new Set()
 
   modules.forEach((mod) => {
     let content = {}
@@ -10,21 +11,24 @@ function generateHtml(resumeData, modules, cssStyle) {
       content = typeof mod.content === 'string' ? JSON.parse(mod.content) : (mod.content || {})
     } catch { content = {} }
 
+    const skipTitle = generatedSections.has(mod.moduleType)
+    generatedSections.add(mod.moduleType)
+
     switch (mod.moduleType) {
       case 'basic_info':
         headerHtml = generateBasicInfo(content)
         break
       case 'education':
-        sectionHtmls.push(generateEducation(content))
+        sectionHtmls.push(generateEducation(content, skipTitle))
         break
       case 'work_experience':
-        sectionHtmls.push(generateWorkExperience(content))
+        sectionHtmls.push(generateWorkExperience(content, skipTitle))
         break
       case 'project':
-        sectionHtmls.push(generateProject(content))
+        sectionHtmls.push(generateProject(content, skipTitle))
         break
       case 'award':
-        sectionHtmls.push(generateAward(content))
+        sectionHtmls.push(generateAward(content, skipTitle))
         break
     }
   })
@@ -63,33 +67,37 @@ function generateBasicInfo(content) {
   const expectedEntryDate = content.expectedEntryDate || ''
   const isPartyMember = content.isPartyMember || false
   const photo = content.photo || ''
+  const photoBorder = content.photoBorder || false
 
   const contactItems = []
-  if (phone) contactItems.push(`<span>${phone}</span>`)
-  if (email) contactItems.push(`<span>${email}</span>`)
-  if (wechat) contactItems.push(`<span>微信: ${wechat}</span>`)
-  if (github) contactItems.push(`<a href="${github}">${github}</a>`)
-  if (blog) contactItems.push(`<a href="${blog}">${blog}</a>`)
+  if (phone) contactItems.push(`<span>📱 ${phone}</span>`)
+  if (email) contactItems.push(`<span>✉️ ${email}</span>`)
+  if (wechat) contactItems.push(`<span>💬 ${wechat}</span>`)
+  if (github) contactItems.push(`<a href="${github}" target="_blank">GitHub</a>`)
+  if (blog) contactItems.push(`<a href="${blog}" target="_blank">博客</a>`)
   if (leetcode) contactItems.push(`<span>LeetCode: ${leetcode}</span>`)
-  if (workYears) contactItems.push(`<span>${workYears}</span>`)
-  if (targetCity) contactItems.push(`<span>${targetCity}</span>`)
-  if (hometown) contactItems.push(`<span>籍贯: ${hometown}</span>`)
-  if (salaryRange) contactItems.push(`<span>${salaryRange}</span>`)
-  if (expectedEntryDate) contactItems.push(`<span>到岗: ${expectedEntryDate}</span>`)
-  if (isPartyMember) contactItems.push(`<span>中共党员</span>`)
+  if (workYears) contactItems.push(`<span>👨 ${workYears}</span>`)
+  if (targetCity) contactItems.push(`<span>📍 ${targetCity}</span>`)
+  if (hometown) contactItems.push(`<span>🏠 ${hometown}</span>`)
+  if (salaryRange) contactItems.push(`<span>💰 ${salaryRange}</span>`)
+  if (expectedEntryDate) contactItems.push(`<span>📅 ${expectedEntryDate}</span>`)
+  if (isPartyMember) contactItems.push(`<span>🚩 中共党员</span>`)
 
-  const photoHtml = photo ? `<img class="avatar" src="${photo}" alt="照片" />` : ''
+  const photoStyle = photoBorder ? 'style="border: 3px solid rgba(255,255,255,0.3);"' : ''
+  const photoHtml = photo ? `<img class="avatar" src="${photo}" alt="照片" ${photoStyle}/>` : ''
 
   return `<header>
+    <div class="header-content">
+      <h1 class="name">${name}</h1>
+      ${jobIntention ? `<p class="job-intention">${jobIntention}</p>` : ''}
+      ${contactItems.length ? `<div class="contact-info">${contactItems.join(' | ')}</div>` : ''}
+      ${summary ? `<p class="summary">${summary}</p>` : ''}
+    </div>
     ${photoHtml}
-    <h1 class="name">${name}</h1>
-    ${jobIntention ? `<p class="job-intention">${jobIntention}</p>` : ''}
-    ${contactItems.length ? `<div class="contact-info">${contactItems.join(' | ')}</div>` : ''}
-    ${summary ? `<p class="summary">${summary}</p>` : ''}
   </header>`
 }
 
-function generateEducation(content) {
+function generateEducation(content, skipTitle = false) {
   const school = content.school || ''
   const department = content.department || ''
   const major = content.major || ''
@@ -111,7 +119,7 @@ function generateEducation(content) {
   const logoHtml = schoolLogo ? `<img class="school-logo" src="${schoolLogo}" alt="${school}" />` : ''
 
   return `<div class="section">
-    <h2 class="section-title">教育经历</h2>
+    ${skipTitle ? '' : '<h2 class="section-title">教育经历</h2>'}
     <div class="timeline-item">
       ${logoHtml}
       <div class="timeline-header">
@@ -128,7 +136,7 @@ function generateEducation(content) {
   </div>`
 }
 
-function generateWorkExperience(content) {
+function generateWorkExperience(content, skipTitle = false) {
   const company = content.company || ''
   const position = content.position || ''
   const techStack = content.techStack || ''
@@ -152,7 +160,7 @@ function generateWorkExperience(content) {
     : ''
 
   return `<div class="section">
-    <h2 class="section-title">工作经历</h2>
+    ${skipTitle ? '' : '<h2 class="section-title">工作经历</h2>'}
     <div class="timeline-item">
       <div class="timeline-header">
         <span class="company">${company}</span>
@@ -166,7 +174,7 @@ function generateWorkExperience(content) {
   </div>`
 }
 
-function generateProject(content) {
+function generateProject(content, skipTitle = false) {
   const projectName = content.projectName || ''
   const role = content.role || ''
   const startDate = content.startDate || ''
@@ -191,7 +199,7 @@ function generateProject(content) {
     : ''
 
   return `<div class="section">
-    <h2 class="section-title">项目经历</h2>
+    ${skipTitle ? '' : '<h2 class="section-title">项目经历</h2>'}
     <div class="project">
       <div class="project-meta">
         <span class="project-title">${projectName}</span>
@@ -206,7 +214,7 @@ function generateProject(content) {
   </div>`
 }
 
-function generateAward(content) {
+function generateAward(content, skipTitle = false) {
   const categories = content.categories
   let certTags = ''
 
@@ -234,7 +242,7 @@ function generateAward(content) {
   }
 
   return `<div class="section">
-    <h2 class="section-title">荣誉证书</h2>
+    ${skipTitle ? '' : '<h2 class="section-title">荣誉证书</h2>'}
     <div>
       ${certTags}
     </div>

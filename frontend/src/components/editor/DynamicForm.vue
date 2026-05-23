@@ -84,12 +84,26 @@
           @change="emitUpdate"
         />
 
-        <el-input
-          v-else-if="field.fieldType === 'image'"
-          v-model="localData[field.fieldKey]"
-          :placeholder="field.placeholder || '点击上传图片或输入图片URL'"
-          @change="emitUpdate"
-        />
+        <div v-else-if="field.fieldType === 'image'" class="image-upload">
+          <el-input
+            v-model="localData[field.fieldKey]"
+            :placeholder="field.placeholder || '上传图片或输入图片URL'"
+            @change="emitUpdate"
+          >
+            <template #append>
+              <el-upload
+                :show-file-list="false"
+                :before-upload="(file) => handleImageUpload(file, field.fieldKey)"
+                accept="image/*"
+              >
+                <el-button>上传</el-button>
+              </el-upload>
+            </template>
+          </el-input>
+          <div v-if="localData[field.fieldKey]" class="image-preview">
+            <img :src="localData[field.fieldKey]" alt="预览" />
+          </div>
+        </div>
 
         <el-input
           v-else
@@ -104,6 +118,8 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { uploadImage } from '../../api/upload'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   fieldConfigs: {
@@ -150,6 +166,18 @@ function removeListItem(key, index) {
   }
 }
 
+async function handleImageUpload(file, fieldKey) {
+  try {
+    const imageUrl = await uploadImage(file)
+    localData.value[fieldKey] = imageUrl
+    emitUpdate()
+    ElMessage.success('图片上传成功')
+  } catch (error) {
+    ElMessage.error('图片上传失败')
+  }
+  return false
+}
+
 function emitUpdate() {
   emit('update', { ...localData.value })
 }
@@ -184,5 +212,22 @@ function emitUpdate() {
 
 .list-item .el-input {
   flex: 1;
+}
+
+.image-upload {
+  width: 100%;
+}
+
+.image-preview {
+  margin-top: 8px;
+  text-align: center;
+}
+
+.image-preview img {
+  max-width: 120px;
+  max-height: 160px;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  object-fit: cover;
 }
 </style>
