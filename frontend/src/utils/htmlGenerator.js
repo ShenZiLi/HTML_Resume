@@ -103,7 +103,7 @@ function generateEducation(content, skipTitle = false) {
   const isDoubleFirst = content.isDoubleFirst || false
   const schoolLogo = content.schoolLogo || ''
 
-  const dateStr = [startDate, endDate].filter(Boolean).join(' - ')
+  const dateStr = [startDate, endDate].filter(Boolean).join(' ~ ')
 
   const tags = []
   if (is211) tags.push('<span class="certificate-tag">211</span>')
@@ -140,7 +140,7 @@ function generateWorkExperience(content, skipTitle = false) {
   const startDate = content.startDate || ''
   const endDate = content.endDate || ''
 
-  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' - ')
+  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' ~ ')
 
   const respHtml = responsibilities.length
     ? `<ul class="description">${responsibilities.filter(r => r.trim()).map(r => `<li>${boldMarkdown(r)}</li>`).join('\n        ')}</ul>`
@@ -178,7 +178,7 @@ function generateProject(content, skipTitle = false) {
   const responsibilities = Array.isArray(content.responsibilities) ? content.responsibilities : []
   const achievements = Array.isArray(content.achievements) ? content.achievements : []
 
-  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' – ')
+  const dateStr = [startDate, endDate || '至今'].filter(Boolean).join(' ~ ')
 
   const descHtml = description
     ? `<div class="description"><p><strong>项目描述</strong>：${boldMarkdown(description)}</p></div>`
@@ -195,7 +195,7 @@ function generateProject(content, skipTitle = false) {
   return `<div class="section">
     ${skipTitle ? '' : '<h2 class="section-title">项目经历</h2>'}
     <div class="project">
-      <div class="project-meta">
+      <div class="timeline-header">
         <span class="project-title">${projectName}</span>
         ${dateStr ? `<span class="date">${dateStr}</span>` : ''}
       </div>
