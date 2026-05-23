@@ -4,6 +4,7 @@
       <el-select
         v-model="currentResumeId"
         class="resume-selector"
+        popper-class="resume-selector-dropdown"
         size="small"
         placeholder="选择简历"
         @change="handleResumeSwitch"
@@ -13,7 +14,10 @@
           :key="r.id"
           :label="r.title || '未命名简历'"
           :value="r.id"
-        />
+        >
+          <span class="resume-option-label">{{ r.title || '未命名简历' }}</span>
+          <span class="resume-option-delete" @click.stop="handleDeleteResume(r)">✕</span>
+        </el-option>
       </el-select>
 
       <el-input
@@ -57,8 +61,8 @@
 import { ref, watch, computed } from 'vue'
 import { useResumeStore } from '../../store/modules/resume'
 import { useStyleStore } from '../../store/modules/style'
-import { createResume, updateResumeTitle, exportHtml, exportJson } from '../../api/resume'
-import { ElMessage } from 'element-plus'
+import { createResume, updateResumeTitle, deleteResume as apiDeleteResume, exportHtml, exportJson } from '../../api/resume'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const resumeStore = useResumeStore()
 const styleStore = useStyleStore()
@@ -112,6 +116,40 @@ async function handleResumeSwitch(resumeId) {
     styleStore.loadStyles()
   } catch (error) {
     ElMessage.error('切换简历失败')
+  }
+}
+
+async function handleDeleteResume(resume) {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除简历「${resume.title || '未命名简历'}」吗？此操作不可撤销。`,
+      '删除确认',
+      { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' }
+    )
+  } catch {
+    return
+  }
+
+  try {
+    await apiDeleteResume(resume.id)
+    ElMessage.success('简历已删除')
+
+    const isCurrent = resumeStore.currentResume?.id === resume.id
+    await resumeStore.loadResumeList()
+
+    if (isCurrent) {
+      if (resumeStore.resumeList.length > 0) {
+        await resumeStore.switchResume(resumeStore.resumeList[0].id)
+      } else {
+        const newResume = await createResume({ title: '未命名简历' })
+        await resumeStore.loadResumeList()
+        await resumeStore.loadResume(newResume.id)
+        resumeStore.autoSelectFirstModule()
+      }
+      styleStore.loadStyles()
+    }
+  } catch (error) {
+    ElMessage.error('删除简历失败')
   }
 }
 
@@ -260,5 +298,34 @@ async function handleStyleChange(styleId) {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+</style>
+
+<style>
+.resume-selector-dropdown .el-select-dropdown__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resume-option-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-option-delete {
+  padding: 0 4px;
+  font-size: 12px;
+  color: #64748b;
+  border-radius: 6px;
+  transition: color 150ms ease, background 150ms ease;
+  line-height: 1;
+}
+
+.resume-option-delete:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
 }
 </style>
