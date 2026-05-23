@@ -131,12 +131,7 @@ async function handleDelete(mod) {
   }
 }
 
-function onDragEnd(event) {
-  const { oldIndex, newIndex } = event
-  if (oldIndex === newIndex) return
-
-  resumeStore.reorderModules({ oldIndex, newIndex })
-
+function onDragEnd() {
   const sortedModules = resumeStore.modules.map((mod, index) => ({
     id: mod.id,
     sortOrder: index
