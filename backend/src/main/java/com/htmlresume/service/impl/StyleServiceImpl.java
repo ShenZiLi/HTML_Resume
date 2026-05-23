@@ -45,11 +45,10 @@ public class StyleServiceImpl extends ServiceImpl<CssStyleMapper, CssStyle> impl
 
     @Override
     public CssStyle updateStyleContent(Long id, String cssContent) {
-        CssStyle style = getById(id);
-        if (style != null) {
-            style.setCssContent(cssContent);
-            updateById(style);
-        }
+        CssStyle style = new CssStyle();
+        style.setId(id);
+        style.setCssContent(cssContent);
+        updateById(style);
         return style;
     }
 }
