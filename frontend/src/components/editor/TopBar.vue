@@ -32,8 +32,18 @@
 
       <el-button size="small" @click="handleNewResume">新建简历</el-button>
       <el-button size="small" @click="handleImport">导入</el-button>
-      <el-button size="small" type="primary" @click="handleExportHtml">导出 HTML</el-button>
-      <el-button size="small" type="primary" @click="handleExportJson">导出 JSON</el-button>
+      <el-dropdown size="small" @command="handleExportCommand">
+        <el-button size="small" type="primary">
+          导出 <el-icon class="el-icon--right"><arrow-down /></el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="html">导出 HTML</el-dropdown-item>
+            <el-dropdown-item command="json">导出 JSON</el-dropdown-item>
+            <el-dropdown-item command="markdown">导出 Markdown</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
 
     <div class="top-bar-right">
@@ -62,7 +72,9 @@ import { ref, watch, computed } from 'vue'
 import { useResumeStore } from '../../store/modules/resume'
 import { useStyleStore } from '../../store/modules/style'
 import { createResume, updateResumeTitle, deleteResume as apiDeleteResume, exportHtml, exportJson } from '../../api/resume'
+import { generateMarkdown } from '../../utils/markdownGenerator'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowDown } from '@element-plus/icons-vue'
 
 const resumeStore = useResumeStore()
 const styleStore = useStyleStore()
@@ -187,6 +199,20 @@ function handleFileImport(event) {
   event.target.value = ''
 }
 
+function handleExportCommand(command) {
+  switch (command) {
+    case 'html':
+      handleExportHtml()
+      break
+    case 'json':
+      handleExportJson()
+      break
+    case 'markdown':
+      handleExportMarkdown()
+      break
+  }
+}
+
 async function handleExportHtml() {
   if (!resumeStore.currentResume) {
     ElMessage.warning('请先加载简历')
@@ -224,6 +250,26 @@ async function handleExportJson() {
     ElMessage.success('导出 JSON 成功')
   } catch (error) {
     ElMessage.error('导出 JSON 失败')
+  }
+}
+
+function handleExportMarkdown() {
+  if (!resumeStore.currentResume) {
+    ElMessage.warning('请先加载简历')
+    return
+  }
+  try {
+    const md = generateMarkdown(resumeStore.currentResume, resumeStore.modules)
+    const blob = new Blob([md], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${resumeStore.currentResume.title || '简历'}.md`
+    a.click()
+    URL.revokeObjectURL(url)
+    ElMessage.success('导出 Markdown 成功')
+  } catch (error) {
+    ElMessage.error('导出 Markdown 失败')
   }
 }
 
