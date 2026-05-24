@@ -210,38 +210,35 @@ function generateProject(content, skipTitle = false) {
 
 function generateAward(content, skipTitle = false) {
   const categories = content.categories
-  let certTags = ''
+  let items = []
 
   if (Array.isArray(categories)) {
-    certTags = categories
-      .filter(c => String(c).trim())
-      .map(c => `<span class="certificate-tag">${boldMarkdown(c)}</span>`)
-      .join('\n      ')
+    items = categories.filter(c => String(c).trim())
   } else if (typeof categories === 'string') {
     try {
       const parsed = JSON.parse(categories)
       if (Array.isArray(parsed)) {
-        certTags = parsed
-          .flatMap(cat => {
-            if (typeof cat === 'object' && cat.items) {
-              return cat.items.map(i => `<span class="certificate-tag">${boldMarkdown(i)}</span>`)
-            }
-            return [`<span class="certificate-tag">${boldMarkdown(cat)}</span>`]
-          })
-          .join('\n      ')
+        items = parsed.flatMap(cat => {
+          if (typeof cat === 'object' && cat.items) return cat.items
+          return [cat]
+        })
       } else {
-        certTags = `<span class="certificate-tag">${boldMarkdown(categories)}</span>`
+        items = [categories]
       }
     } catch {
-      certTags = `<span class="certificate-tag">${boldMarkdown(categories)}</span>`
+      items = [categories]
     }
   }
 
+  const certTags = items
+    .map(c => `<span class="certificate-tag">${boldMarkdown(c)}</span>`)
+    .join('\n         ')
+
   return `<div class="section">
     ${skipTitle ? '' : '<h2 class="section-title">荣誉证书</h2>'}
-    <div>
-      ${certTags}
-    </div>
+    <div class="certificates"> 
+         ${certTags}
+       </div>
   </div>`
 }
 
