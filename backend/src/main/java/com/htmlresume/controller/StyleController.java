@@ -42,4 +42,18 @@ public class StyleController {
         }
         return Result.success(style);
     }
+
+    @PostMapping
+    public Result<CssStyle> createStyle(@RequestBody Map<String, Object> body) {
+        String name = body.get("name") != null ? body.get("name").toString() : "";
+        String cssContent = body.get("cssContent") != null ? body.get("cssContent").toString() : "";
+        CssStyle style = styleService.createStyle(name, cssContent);
+        return Result.success(style);
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<Void> deleteStyle(@PathVariable Long id) {
+        styleService.deleteStyle(id);
+        return Result.success();
+    }
 }

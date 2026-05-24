@@ -16,4 +16,8 @@ public interface StyleService extends IService<CssStyle> {
     CssStyle getDefaultStyle();
 
     CssStyle updateStyleContent(Long id, String cssContent);
+
+    CssStyle createStyle(String name, String cssContent);
+
+    void deleteStyle(Long id);
 }

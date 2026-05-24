@@ -1,0 +1,248 @@
+/* ======================
+   全局变量定义（CSS 自定义属性）
+   ====================== */
+:root {
+    --primary: #a86eff;           /* 主色调：紫色 */
+    --primary-light: #dbeafe;     /* 主色浅色版：淡蓝 */
+    --dark: #1e293b;              /* 深灰色文字 */
+    --gray: #64748b;              /* 中灰色 */
+    --light-gray: #f1f5f9;        /* 背景色/卡片底色 */
+    --white: #ffffff;             /* 白色 */
+    --border: #e2e8f0;            /* 边框颜色 */
+}
+
+/* ======================
+   全局重置与基础设置
+   ====================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* 所有元素使用 border-box 盒模型 */
+}
+
+body {
+    font-family: 'Inter', sans-serif; /* 使用 Inter 字体 */
+    background-color: #fafafa;        /* 页面背景色 */
+    color: var(--dark);               /* 默认文字颜色 */
+    line-height: 1.6;                 /* 行高 */
+    padding: 2rem;                    /* 页面内边距 */
+}
+
+/* ======================
+   简历容器样式
+   ====================== */
+.resume {
+    max-width: 960px;                 /* 最大宽度 */
+    margin: 0 auto;                   /* 居中 */
+    background: var(--white);         /* 白色背景 */
+    border-radius: 12px;              /* 圆角 */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 阴影效果 */
+    overflow: hidden;                 /* 隐藏溢出内容 */
+}
+
+/* ======================
+   头部区域（包含头像、姓名、求职意向等）
+   ====================== */
+header {
+    background: linear-gradient(135deg, var(--primary), #1d4ed8); /* 渐变背景 */
+    color: var(--white);              /* 白色文字 */
+    padding: 2.5rem 2rem;             /* 内边距 */
+    display: flex;
+    justify-content: space-between;   /* 左右分布 */
+    align-items: flex-start;          /* 顶部对齐 */
+    gap: 1.5rem;                      /* 子元素间距 */
+    position: relative;
+}
+
+.header-content {
+    flex: 1;                          /* 占据剩余空间 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;                      /* 内容项间距 */
+}
+
+.avatar {
+    width: 100px;
+    height: 130px;
+    object-fit: cover;                /* 图片填充方式 */
+    border-radius: 8px;               /* 圆角 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 头像阴影 */
+    flex-shrink: 0;                   /* 不压缩 */
+}
+
+.job-intention {
+    font-size: 1.1rem;
+    font-weight: 500;
+    opacity: 0.9;                     /* 求职意向文字透明度 */
+}
+
+.contact-info {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    display: flex;
+    flex-wrap: wrap;                  /* 允许换行 */
+    gap: 0.5rem;                      /* 联系方式项间距 */
+}
+
+.contact-info a {
+    color: var(--white);
+    text-decoration: underline;       /* 超链接下划线 */
+}
+
+.summary {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    line-height: 1.5;                 /* 个人简介样式 */
+}
+
+/* ======================
+   响应式：移动端适配（头部）
+   ====================== */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column-reverse; /* 移动端：内容在上，头像在下 */
+        align-items: center;
+    }
+    .avatar {
+        width: 80px;
+        height: 100px;
+    }
+    .contact-info {
+        flex-direction: column;         /* 联系方式垂直排列 */
+        gap: 0.5rem;
+    }
+}
+
+/* ======================
+   简历各部分内容区（教育、工作、项目等）
+   ====================== */
+.section {
+    padding: 2rem 2rem 0rem 2rem;     /* 上左右内边距，底部为0（由子项控制） */
+}
+
+.section:last-child {
+    border-bottom: none;              /* 最后一个 section 无底边框（虽未定义边框，保留以防扩展） */
+}
+
+.section-title {
+    font-size: 1.375rem;              /* 标题字号 */
+    font-weight: 600;
+    color: var(--primary);            /* 主色标题 */
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-light); /* 底部装饰线 */
+}
+
+/* ======================
+   时间线项目（工作/教育经历）
+   ====================== */
+.timeline-item {
+    margin-bottom: 1.75rem;           /* 每个经历项的间距 */
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;   /* 公司/学校 与 时间 分列两侧 */
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;                  /* 允许换行 */
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.company,
+.school {
+    font-weight: 600;
+    font-size: 1.125rem;              /* 公司或学校名称 */
+}
+
+.position,
+.major {
+    font-weight: 500;
+    color: var(--gray);               /* 职位或专业 */
+}
+
+.degree {
+    font-weight: 500;
+    color: var(--gray);               /* 学位信息 */
+}
+
+.date {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;              /* 时间标签圆角 */
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;              /* 防止时间换行 */
+}
+
+.description {
+    margin-top: 0.75rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--primary-light); /* 左侧装饰条 */
+}
+
+.description li {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.25rem;
+    list-style-type: none;            /* 移除默认列表符号 */
+}
+
+.description li:before {
+    content: "•";
+    color: var(--primary);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 0;                           /* 自定义项目符号 */
+}
+
+/* ======================
+   证书/技能标签
+   ====================== */
+.certificate-tag {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+    margin: 0.25rem;                  /* 标签间距 */
+}
+
+/* ======================
+   项目经验区块
+   ====================== */
+.project {
+    background: var(--light-gray);    /* 浅灰背景 */
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.project-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0rem;              /* 项目标题 */
+}
+
+.project .company {
+    font-size: 1rem;
+    color: var(--gray);
+    font-weight: 500;                 /* 项目所属公司/团队 */
+}
+
+/* ======================
+   响应式：移动端适配（全局）
+   ====================== */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;                  /* 移动端减少页面内边距 */
+    }
+    .contact-info {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}

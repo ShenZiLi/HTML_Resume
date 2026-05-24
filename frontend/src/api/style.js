@@ -19,3 +19,11 @@ export function saveStyleConfig(id, config) {
 export function updateStyleContent(id, cssContent) {
   return request.put(`/styles/${id}/content`, { cssContent })
 }
+
+export function createStyle(data) {
+  return request.post('/styles', data)
+}
+
+export function deleteStyle(id) {
+  return request.delete(`/styles/${id}`)
+}
