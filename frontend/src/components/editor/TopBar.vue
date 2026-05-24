@@ -31,7 +31,6 @@
       <span v-else class="title-placeholder">未加载简历</span>
 
       <el-button size="small" @click="handleNewResume">新建简历</el-button>
-      <el-button size="small" @click="handleImport">导入</el-button>
       <el-dropdown size="small" @command="handleExportCommand">
         <el-button size="small" type="primary">
           导出 <el-icon class="el-icon--right"><arrow-down /></el-icon>
@@ -39,7 +38,6 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="html">导出 HTML</el-dropdown-item>
-            <el-dropdown-item command="json">导出 JSON</el-dropdown-item>
             <el-dropdown-item command="markdown">导出 Markdown</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -63,7 +61,6 @@
       </el-select>
     </div>
 
-    <input ref="importInput" type="file" accept=".json" style="display: none" @change="handleFileImport" />
   </div>
 </template>
 
@@ -71,14 +68,13 @@
 import { ref, watch, computed } from 'vue'
 import { useResumeStore } from '../../store/modules/resume'
 import { useStyleStore } from '../../store/modules/style'
-import { createResume, updateResumeTitle, deleteResume as apiDeleteResume, exportHtml, exportJson } from '../../api/resume'
+import { createResume, updateResumeTitle, deleteResume as apiDeleteResume, exportHtml } from '../../api/resume'
 import { generateMarkdown } from '../../utils/markdownGenerator'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 
 const resumeStore = useResumeStore()
 const styleStore = useStyleStore()
-const importInput = ref(null)
 
 const titleInput = ref('')
 const selectedStyleId = ref(null)
@@ -178,34 +174,10 @@ async function handleNewResume() {
   }
 }
 
-function handleImport() {
-  importInput.value?.click()
-}
-
-function handleFileImport(event) {
-  const file = event.target.value
-  if (!file) return
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    try {
-      const data = JSON.parse(e.target.result)
-      ElMessage.success('导入成功')
-    } catch (error) {
-      ElMessage.error('导入失败：文件格式错误')
-    }
-  }
-  reader.readAsText(file)
-  event.target.value = ''
-}
-
 function handleExportCommand(command) {
   switch (command) {
     case 'html':
       handleExportHtml()
-      break
-    case 'json':
-      handleExportJson()
       break
     case 'markdown':
       handleExportMarkdown()
@@ -230,26 +202,6 @@ async function handleExportHtml() {
     ElMessage.success('导出 HTML 成功')
   } catch (error) {
     ElMessage.error('导出 HTML 失败')
-  }
-}
-
-async function handleExportJson() {
-  if (!resumeStore.currentResume) {
-    ElMessage.warning('请先加载简历')
-    return
-  }
-  try {
-    const data = await exportJson(resumeStore.currentResume.id)
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${resumeStore.currentResume.title || '简历'}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-    ElMessage.success('导出 JSON 成功')
-  } catch (error) {
-    ElMessage.error('导出 JSON 失败')
   }
 }
 

@@ -14,7 +14,7 @@
           @click="selectModule(element)"
         >
           <span class="drag-handle">☰</span>
-          <span class="module-label">{{ getModuleLabel(element.moduleType) }}</span>
+          <span class="module-label">{{ getModuleDisplayName(element) }}</span>
           <el-button
             class="delete-btn"
             size="small"
@@ -85,6 +85,26 @@ const moduleTypes = [
 function getModuleLabel(type) {
   const found = moduleTypes.find((t) => t.value === type)
   return found ? found.label : type
+}
+
+const displayFieldMap = {
+  education: 'school',
+  work_experience: 'company',
+  project: 'projectName'
+}
+
+function getModuleDisplayName(mod) {
+  const typeLabel = getModuleLabel(mod.moduleType)
+  const fieldKey = displayFieldMap[mod.moduleType]
+  if (!fieldKey) return typeLabel
+
+  let content = {}
+  try {
+    content = typeof mod.content === 'string' ? JSON.parse(mod.content) : (mod.content || {})
+  } catch { content = {} }
+
+  const name = content[fieldKey]
+  return name ? `${typeLabel} - ${name}` : typeLabel
 }
 
 function selectModule(mod) {
