@@ -118,8 +118,10 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { uploadImage } from '../../api/upload'
 import { ElMessage } from 'element-plus'
+
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024
+const COMPRESS_THRESHOLD = 500 * 1024
 
 const props = defineProps({
   fieldConfigs: {
@@ -166,16 +168,51 @@ function removeListItem(key, index) {
   }
 }
 
-async function handleImageUpload(file, fieldKey) {
-  try {
-    const imageUrl = await uploadImage(file)
-    localData.value[fieldKey] = imageUrl
-    emitUpdate()
-    ElMessage.success('图片上传成功')
-  } catch (error) {
-    ElMessage.error('图片上传失败')
+function handleImageUpload(file, fieldKey) {
+  if (file.size > MAX_IMAGE_SIZE) {
+    ElMessage.error('图片大小不能超过 2MB')
+    return false
   }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const base64 = e.target.result
+    if (file.size > COMPRESS_THRESHOLD) {
+      compressImage(base64, file.type, (compressed) => {
+        localData.value[fieldKey] = compressed
+        emitUpdate()
+        ElMessage.success('图片上传成功')
+      })
+    } else {
+      localData.value[fieldKey] = base64
+      emitUpdate()
+      ElMessage.success('图片上传成功')
+    }
+  }
+  reader.onerror = () => {
+    ElMessage.error('图片读取失败')
+  }
+  reader.readAsDataURL(file)
   return false
+}
+
+function compressImage(base64, mimeType, callback) {
+  const img = new Image()
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    const maxW = 800
+    const maxH = 1000
+    let w = img.width
+    let h = img.height
+    if (w > maxW) { h = h * maxW / w; w = maxW }
+    if (h > maxH) { w = w * maxH / h; h = maxH }
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0, w, h)
+    callback(canvas.toDataURL(mimeType || 'image/jpeg', 0.8))
+  }
+  img.src = base64
 }
 
 function emitUpdate() {
