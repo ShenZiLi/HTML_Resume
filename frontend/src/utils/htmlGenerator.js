@@ -212,27 +212,29 @@ function generateAward(content, skipTitle = false) {
   const categories = content.categories
   let certTags = ''
 
-  if (typeof categories === 'string') {
+  if (Array.isArray(categories)) {
+    certTags = categories
+      .filter(c => String(c).trim())
+      .map(c => `<span class="certificate-tag">${boldMarkdown(c)}</span>`)
+      .join('\n      ')
+  } else if (typeof categories === 'string') {
     try {
       const parsed = JSON.parse(categories)
       if (Array.isArray(parsed)) {
-        certTags = parsed.flatMap(cat => {
-          const items = cat.items || []
-          return items.map(i => `<span class="certificate-tag">${boldMarkdown(i)}</span>`).join('\n      ')
-        }).join('\n      ')
+        certTags = parsed
+          .flatMap(cat => {
+            if (typeof cat === 'object' && cat.items) {
+              return cat.items.map(i => `<span class="certificate-tag">${boldMarkdown(i)}</span>`)
+            }
+            return [`<span class="certificate-tag">${boldMarkdown(cat)}</span>`]
+          })
+          .join('\n      ')
+      } else {
+        certTags = `<span class="certificate-tag">${boldMarkdown(categories)}</span>`
       }
     } catch {
       certTags = `<span class="certificate-tag">${boldMarkdown(categories)}</span>`
     }
-  } else if (Array.isArray(categories)) {
-    certTags = categories
-      .flatMap(cat => {
-        if (typeof cat === 'object' && cat.items) {
-          return cat.items.map(i => `<span class="certificate-tag">${boldMarkdown(i)}</span>`)
-        }
-        return [`<span class="certificate-tag">${boldMarkdown(cat)}</span>`]
-      })
-      .join('\n      ')
   }
 
   return `<div class="section">
